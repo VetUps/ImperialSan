@@ -1,0 +1,6 @@
+@ImperialSanAPI_HostAddress = http://localhost:5020
+
+GET {{ImperialSanAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
