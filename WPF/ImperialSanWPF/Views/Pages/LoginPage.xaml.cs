@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +29,28 @@ namespace ImperialSanWPF.Views.Pages
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
+            var url = "http://localhost:5020/api/User/login";
+            using (HttpClient client = new HttpClient())
+            {
+                using StringContent jsonContent = new(
+                    JsonSerializer.Serialize(new
+                    {
+                        email = emailTextBox.Text,
+                        password = passwordTextBox.Text,
+                    }),
+                    Encoding.UTF8,
+                    "application/json");
 
+                var response = client.PostAsync(url, jsonContent);
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Данные успешно отправлены!");
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка при отправке данных: " + response.Result.StatusCode);
+                }
+            }
         }
     }
 }
