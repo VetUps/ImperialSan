@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImperialSanWPF.Utils;
 
 namespace ImperialSanWPF.Views.Pages
 {
@@ -27,29 +28,61 @@ namespace ImperialSanWPF.Views.Pages
             InitializeComponent();
         }
 
-        private void loginButton_Click(object sender, RoutedEventArgs e)
+        private static HttpClient httpClient = new()
         {
-            var url = "http://localhost:5020/api/User/login";
-            using (HttpClient client = new HttpClient())
-            {
-                using StringContent jsonContent = new(
-                    JsonSerializer.Serialize(new
-                    {
-                        email = emailTextBox.Text,
-                        password = passwordTextBox.Text,
-                    }),
-                    Encoding.UTF8,
-                    "application/json");
+            BaseAddress = new Uri("http://localhost:5020/api/"),
+        };
 
-                var response = client.PostAsync(url, jsonContent);
-                if (response.Result.IsSuccessStatusCode)
+        private async void loginButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var loginModel = new
                 {
-                    MessageBox.Show("Данные успешно отправлены!");
+                    email = emailTextBox.Text,
+                    password = passwordTextBox.Text,
+                };
+
+                using StringContent jsonContent = new(
+                    JsonSerializer.Serialize(loginModel),
+                    Encoding.UTF8,
+                    "application/json"
+                    );
+
+                using HttpResponseMessage response = await httpClient.PostAsync("User/login", jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show(jsonResponse);
                 }
                 else
                 {
-                    MessageBox.Show("Ошибка при отправке данных: " + response.Result.StatusCode);
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    var errorResponse = JsonSerializer.Deserialize<ValidationErrorResponse>(
+                        errorContent,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+
+                    if (errorResponse.Errors != null)
+                    {
+                        List<string> errorMessages = new List<string>();
+
+                        foreach (var error in errorResponse.Errors)
+                            errorMessages.Add(error.Value[0]);
+
+                        MessageBox.Show(errorMessages[0]);
+                    }
+
+                    else
+                    {
+                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorContent}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
         }
     }
