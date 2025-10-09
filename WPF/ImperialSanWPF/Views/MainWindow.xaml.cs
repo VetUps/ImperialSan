@@ -26,5 +26,10 @@ namespace ImperialSanWPF
         {
             mainFrame.Navigate(new LoginPage());
         }
+
+        private void registrationButton_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new RegistrationPage());
+        }
     }
 }

@@ -6,7 +6,7 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="550" d:DesignWidth="900"
+      d:DesignHeight="1010" d:DesignWidth="1920"
       Title="LoginPage">
 
     <Grid>
@@ -16,12 +16,12 @@
             <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="95*"/>
-            <ColumnDefinition Width="350*"/>
-            <ColumnDefinition Width="95*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*"/>
         </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="White">
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="White" VerticalAlignment="Center">
             <Image Source="/Resources/Images/logo.png" Height="80" Width="80"/>
             <TextBlock Text="Авторизация" FontSize="28" HorizontalAlignment="Center" Margin="10"/>
             <TextBox x:Name="emailTextBox"

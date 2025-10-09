@@ -113,7 +113,7 @@ namespace ImperialSanAPI.Controllers
                 context.Users.Add(user);
                 context.SaveChanges();
 
-                return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+                return Ok(user.UserId);
             }
         }
 

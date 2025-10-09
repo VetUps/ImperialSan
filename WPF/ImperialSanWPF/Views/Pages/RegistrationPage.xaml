@@ -4,11 +4,125 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="1010" d:DesignWidth="1920"
       Title="RegistrationPage">
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="400*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="White" VerticalAlignment="Center">
+            <Image Source="/Resources/Images/logo.png" Height="80" Width="80"/>
+            <TextBlock Text="Регистрация" FontSize="28" HorizontalAlignment="Center" Margin="10"/>
+            <TextBox x:Name="emailTextBox"
+                 materialDesign:HintAssist.Hint="Введите почту" 
+                 materialDesign:HintAssist.Foreground="#7B7B7B"
+                 materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                 FontSize="16" 
+                 BorderBrush="#7B7B7B"
+                 Foreground="#7B7B7B"
+                 Margin="80,10,80,10"
+                 MaxLength="100"/>
+
+
+            <TextBox x:Name="passwordTextBox"
+                 materialDesign:HintAssist.Hint="Введите пароль" 
+                 materialDesign:HintAssist.Foreground="#7B7B7B"
+                 materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                 FontSize="16" 
+                 BorderThickness="1"
+                 BorderBrush="#7B7B7B"
+                 Foreground="#7B7B7B"
+                 Margin="80,10,80,10"/>
+
+            <TextBox x:Name="repeatPasswordTextBox"
+                     materialDesign:HintAssist.Hint="Введите пароль ещё раз" 
+                     materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     FontSize="16" 
+                     BorderThickness="1"
+                     BorderBrush="#7B7B7B"
+                     Foreground="#7B7B7B"
+                     Margin="80,10,80,10"/>
+
+            <TextBox x:Name="surnamePasswordTextBox"
+                     materialDesign:HintAssist.Hint="Введите фамилию" 
+                     materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     FontSize="16" 
+                     BorderThickness="1"
+                     BorderBrush="#7B7B7B"
+                     Foreground="#7B7B7B"
+                     Margin="80,10,80,10"
+                     MaxLength="100"/>
+
+            <TextBox x:Name="nameTextBox"
+                     materialDesign:HintAssist.Hint="Введите имя" 
+                     materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     FontSize="16" 
+                     BorderThickness="1"
+                     BorderBrush="#7B7B7B"
+                     Foreground="#7B7B7B"
+                     Margin="80,10,80,10"
+                     MaxLength="100"/>
+
+            <TextBox x:Name="patronymicTextBox"
+                     materialDesign:HintAssist.Hint="Введите отчество (необязательно)" 
+                     materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     FontSize="16" 
+                     BorderThickness="1"
+                     BorderBrush="#7B7B7B"
+                     Foreground="#7B7B7B"
+                     Margin="80,10,80,10"
+                     MaxLength="100"/>
+
+            <TextBox x:Name="phoneTextBox"
+                     materialDesign:HintAssist.Hint="Введите номер телефона" 
+                     materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     FontSize="16" 
+                     BorderThickness="1"
+                     BorderBrush="#7B7B7B"
+                     Foreground="#7B7B7B"
+                     Margin="80,10,80,10"
+                     MaxLength="11"/>
+
+            <Button x:Name="loginButton" 
+                Content="Войти"
+                Background="#FF7028"
+                Height="44"
+                FontSize="16" 
+                Click="loginButton_Click"
+                Margin="80,10,80,10"/>
+
+            <Button x:Name="registartionButton"
+                Content="Регистрация"
+                HorizontalContentAlignment="Left"
+                FontSize="15"
+                Foreground="#FE5B00"
+                Background="Transparent"
+                BorderThickness="0"
+                Margin="80,10,380,10"
+                Click="registartionButton_Click" Cursor="Hand"/>
+        </StackPanel>
     </Grid>
 </Page>

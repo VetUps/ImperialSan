@@ -13,6 +13,10 @@ namespace ImperialSanAPI.DTOs.UserDTO
         [MinLength(6, ErrorMessage = "Пароль должен состоять минимум из 6 символов")]
         public string Password { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Повторить пароль обязательно для регистрации")]
+        [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
+        public string RepeatPassword { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Фамилия обязательна для регистрации")]
         [MaxLength(100, ErrorMessage = "Фамилия слишком длиная")]
         public string Surname { get; set; } = string.Empty;
