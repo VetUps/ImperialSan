@@ -40,7 +40,7 @@ namespace ImperialSanWPF.Views.Pages
                 var loginModel = new
                 {
                     email = emailTextBox.Text,
-                    password = passwordTextBox.Text,
+                    password = passwordTextBox.Password,
                 };
 
                 using StringContent jsonContent = new(

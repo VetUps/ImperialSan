@@ -27,24 +27,23 @@
             <TextBox x:Name="emailTextBox"
                      materialDesign:HintAssist.Hint="Введите почту" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.HasOutlinedTextField="True"
                      materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}"
                      FontSize="16" 
-                     BorderBrush="#7B7B7B"
-                     Foreground="#7B7B7B"
-                     Margin="80,10,80,10">
-            </TextBox>
-
-            <TextBox x:Name="passwordTextBox"
-                     materialDesign:HintAssist.Hint="Введите пароль" 
-                     materialDesign:HintAssist.Foreground="#7B7B7B"
-                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                     FontSize="16" 
-                     BorderThickness="1"
-                     BorderBrush="#7B7B7B"
                      Foreground="#7B7B7B"
                      Margin="80,10,80,10"/>
+
+            <PasswordBox x:Name="passwordTextBox"
+                         materialDesign:HintAssist.Hint="Введите пароль" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                         materialDesign:TextFieldAssist.HasTrailingIcon="True"
+                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                         FontSize="16" 
+                         Foreground="#7B7B7B"
+                         Margin="80,10,80,10"/>
 
             <Button x:Name="loginButton" 
                     Content="Войти"

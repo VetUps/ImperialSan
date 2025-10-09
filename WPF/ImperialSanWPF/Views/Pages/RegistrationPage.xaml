@@ -36,29 +36,33 @@
                  MaxLength="100"/>
 
 
-            <TextBox x:Name="passwordTextBox"
-                 materialDesign:HintAssist.Hint="Введите пароль" 
-                 materialDesign:HintAssist.Foreground="#7B7B7B"
-                 materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                 FontSize="16" 
-                 BorderThickness="1"
-                 BorderBrush="#7B7B7B"
-                 Foreground="#7B7B7B"
-                 Margin="80,10,80,10"/>
+            <PasswordBox x:Name="passwordTextBox"
+                         materialDesign:HintAssist.Hint="Введите пароль" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                         materialDesign:TextFieldAssist.HasTrailingIcon="True"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                         FontSize="16" 
+                         BorderThickness="1"
+                         BorderBrush="#7B7B7B"
+                         Foreground="#7B7B7B"
+                         Margin="80,10,80,10"/>
 
-            <TextBox x:Name="repeatPasswordTextBox"
-                     materialDesign:HintAssist.Hint="Введите пароль ещё раз" 
-                     materialDesign:HintAssist.Foreground="#7B7B7B"
-                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                     FontSize="16" 
-                     BorderThickness="1"
-                     BorderBrush="#7B7B7B"
-                     Foreground="#7B7B7B"
-                     Margin="80,10,80,10"/>
+            <PasswordBox x:Name="repeatPasswordTextBox"
+                         materialDesign:HintAssist.Hint="Введите пароль ещё раз" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                         materialDesign:TextFieldAssist.HasTrailingIcon="True"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                         FontSize="16" 
+                         BorderThickness="1"
+                         BorderBrush="#7B7B7B"
+                         Foreground="#7B7B7B"
+                         Margin="80,10,80,10"/>
 
-            <TextBox x:Name="surnamePasswordTextBox"
+            <TextBox x:Name="surnameTextBox"
                      materialDesign:HintAssist.Hint="Введите фамилию" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
                      materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
@@ -106,23 +110,23 @@
                      Margin="80,10,80,10"
                      MaxLength="11"/>
 
-            <Button x:Name="loginButton" 
-                Content="Войти"
+            <Button x:Name="registrationButton" 
+                Content="Регистрация"
                 Background="#FF7028"
                 Height="44"
                 FontSize="16" 
-                Click="loginButton_Click"
+                Click="registrationButton_Click"
                 Margin="80,10,80,10"/>
 
-            <Button x:Name="registartionButton"
-                Content="Регистрация"
+            <Button x:Name="haveAccountButton"
+                Content="У меня уже есть аккаунт"
                 HorizontalContentAlignment="Left"
                 FontSize="15"
                 Foreground="#FE5B00"
                 Background="Transparent"
                 BorderThickness="0"
-                Margin="80,10,380,10"
-                Click="registartionButton_Click" Cursor="Hand"/>
+                Margin="80,10,350,10"
+                Click="haveAccountButton_Click"/>
         </StackPanel>
     </Grid>
 </Page>
