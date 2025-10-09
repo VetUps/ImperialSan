@@ -15,15 +15,14 @@ namespace ImperialSanAPI.Utils
             if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("Пароль не может быть пустым");
 
-            using var hmac = new HMACSHA256();
-            var salt = hmac.Key; // Используем HMAC для генерации соли
+            var salt = RandomNumberGenerator.GetBytes(SaltSize);
 
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations);
             byte[] hash = pbkdf2.GetBytes(KeySize);
 
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
+            byte[] hashBytes = new byte[SaltSize + KeySize];
+            Array.Copy(salt, 0, hashBytes, 0, SaltSize);
+            Array.Copy(hash, 0, hashBytes, SaltSize, KeySize);
 
             return hashBytes;
         }
@@ -38,12 +37,11 @@ namespace ImperialSanAPI.Utils
 
             var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations);
             byte[] hash = pbkdf2.GetBytes(KeySize);
-            
-            for (int i = 0; i < 20; i++)
-                if (storedHash[i + 16] != hash[i])
-                    return false;
 
-            return true;
+            return CryptographicOperations.FixedTimeEquals(
+                new Span<byte>(storedHash, SaltSize, KeySize),
+                hash
+            );
         }
 
         static public bool IsValidPhone(string phone)

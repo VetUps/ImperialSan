@@ -54,7 +54,8 @@ namespace ImperialSanWPF.Views.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show(jsonResponse);
+                    SessionContext.UserId = Convert.ToInt32(jsonResponse);
+                    MessageBox.Show("Успешно");
                 }
                 else
                 {
@@ -84,6 +85,11 @@ namespace ImperialSanWPF.Views.Pages
             {
                 MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
+        }
+
+        private void registartionButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new RegistrationPage());
         }
     }
 }

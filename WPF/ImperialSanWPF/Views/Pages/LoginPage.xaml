@@ -27,16 +27,18 @@
             <TextBox x:Name="emailTextBox"
                      materialDesign:HintAssist.Hint="Введите почту" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}"
                      FontSize="16" 
-                     BorderThickness="1"
                      BorderBrush="#7B7B7B"
                      Foreground="#7B7B7B"
-                     Margin="80,10,80,10"/>
-            
+                     Margin="80,10,80,10">
+            </TextBox>
+
             <TextBox x:Name="passwordTextBox"
                      materialDesign:HintAssist.Hint="Введите пароль" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
                      Style="{StaticResource MaterialDesignOutlinedTextBox}"
                      FontSize="16" 
                      BorderThickness="1"
@@ -53,14 +55,14 @@
                     Margin="80,10,80,10"/>
             
             <Button x:Name="registartionButton"
-                    Cursor="Cross"
                     Content="Регистрация"
                     HorizontalContentAlignment="Left"
                     FontSize="15"
                     Foreground="#FE5B00"
                     Background="Transparent"
                     BorderThickness="0"
-                    Margin="80,10,80,10"/>
+                    Margin="80,10,380,10"
+                    Click="registartionButton_Click" Cursor="Hand"/>
         </StackPanel>
     </Grid>
 </Page>

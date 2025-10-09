@@ -19,7 +19,19 @@ namespace ImperialSanAPI.Controllers
         {
             using (ImperialSanContext context = new ImperialSanContext()) 
             {
-                return Ok(context.Users.Include(u => u.Baskets).Include(u => u.Orders).ToList());
+                var users = context.Users.Select(u => new UserAnswerDTO
+                {
+                    UserId = u.UserId,
+                    Email = u.UserMail,
+                    Name = u.UserName,
+                    Surname = u.UserSurname,
+                    Patronymic = u.UserPatronymic,
+                    Phone = u.UserPhone,
+                    DeliveryAddress = u.DiliveryAddress,
+                    Role = u.Role
+                }).ToList();
+
+                return Ok(users);
             }
         }
 
@@ -29,7 +41,16 @@ namespace ImperialSanAPI.Controllers
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var user = context.Users.Include(u => u.Baskets).Include(u => u.Orders).First(u => u.UserId == userId);
+                var user = context.Users.Select(u => new UserAnswerDTO {
+                    UserId = u.UserId,
+                    Email = u.UserMail,
+                    Name = u.UserName,
+                    Surname = u.UserSurname,
+                    Patronymic = u.UserPatronymic,
+                    Phone = u.UserPhone,
+                    DeliveryAddress = u.DiliveryAddress,
+                    Role = u.Role
+                }).FirstOrDefault(u => u.UserId == userId);
 
                 if (user == null)
                     return NotFound();
@@ -46,27 +67,24 @@ namespace ImperialSanAPI.Controllers
             {
                 // Находим пользователя по email
                 var user = context.Users.FirstOrDefault(u => u.UserMail == dto.Email);
-                if (user == null)
-                    return Unauthorized("Неверный email или пароль.");
 
-                // 2. Проверяем пароль
-                if (!SecurityService.VerifyPassword(dto.Password, user.PasswordHash))
-                    return Unauthorized("Неверный email или пароль.");
-
-                // 3. Возвращаем данные пользователя БЕЗ пароля
-                var userAnswerDto = new UserAnswerDTO
+                UsualProblemDetails loginError = new()
                 {
-                    UserId = user.UserId,
-                    Email = user.UserMail,
-                    Name = user.UserName,
-                    Surname = user.UserSurname,
-                    Patronymic = user.UserPatronymic,
-                    Phone = user.UserPhone,
-                    DeliveryAddress = user.DiliveryAddress,
-                    Role = user.Role
+                    Title = "Ошибка авторизации",
+                    Status = StatusCodes.Status401Unauthorized,
+                    Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Login", ["Неверный email или пароль"]}
+                        },
                 };
 
-                return Ok(userAnswerDto);
+                if (user == null)
+                    return Unauthorized(loginError);
+
+                if (!SecurityService.VerifyPassword(dto.Password, user.PasswordHash))
+                    return Unauthorized(loginError);
+
+                return Ok(user.UserId);
             }
         }
 
