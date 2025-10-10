@@ -76,16 +76,14 @@ namespace ImperialSanAPI.Controllers
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 if (context.Products.Any(u => u.ProductTitle == dto.ProductTitle))
-                    return Conflict("Email уже занят");
+                    return Conflict("Название уже занят");
 
                 if (!context.Categories.Any(c => c.CategoryId ==  dto.CategoryId))
                     return Conflict("Такой категории не существует");
 
-                int product_id = context.Users.ToList().Count();
-
                 var product = new Product
                 {
-                    ProductId = product_id,
+                    ProductId = context.Products.Count(),
                     ProductTitle = dto.ProductTitle,
                     ProductDescription = dto.ProductDescription,
                     Price = dto.Price,
@@ -113,6 +111,22 @@ namespace ImperialSanAPI.Controllers
                 var product = context.Products.Find(id);
                 if (product == null)
                     return NotFound();
+
+                var category = context.Categories.FirstOrDefault(c => c.CategoryId == dto.CategoryId);
+                if (product == null)
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения категории товара",
+                        Status = StatusCodes.Status401Unauthorized,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Category", ["Такой категории не существует"]}
+                        },
+                    };
+
+                    return NotFound(productError);
+                }
 
                 product.ProductTitle = dto.ProductTitle;
                 product.ProductDescription = dto.ProductDescription;
