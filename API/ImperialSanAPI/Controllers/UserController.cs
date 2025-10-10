@@ -183,6 +183,22 @@ namespace ImperialSanAPI.Controllers
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
+                var product = context.Products.FirstOrDefault(p => p.ProductId == dto.ProductId);
+                if (product == null)
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения товара",
+                        Status = StatusCodes.Status401Unauthorized,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такого товара не существует"]}
+                        },
+                    };
+
+                    return NotFound(productError);
+                }
+
                 var basket = context.Baskets
                                     .Include(b => b.BasketPositions)
                                     .FirstOrDefault(b => b.UserId == userId);
@@ -216,7 +232,7 @@ namespace ImperialSanAPI.Controllers
                     {
                         BasketPositionId = p.BasketPositionId,
                         ProductId = p.ProductId ?? 0,
-                        ProductQuantity = p.ProductQuantity ?? 0
+                        ProductQuantity = p.ProductQuantity ?? 0,
                     }).ToList()
                 };
 
