@@ -59,8 +59,9 @@ namespace ImperialSanWPF.Views.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                    SessionContext.UserId = Convert.ToInt32(jsonResponse);
-                    MessageBox.Show("Успешно");
+                    
+                    MessageBox.Show("Вы зарегестрированы");
+                    NavigationService.Navigate(new LoginPage());
                 }
                 else
                 {

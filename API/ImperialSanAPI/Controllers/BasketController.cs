@@ -60,7 +60,7 @@ namespace ImperialSanAPI.Controllers
                     UsualProblemDetails productError = new()
                     {
                         Title = "Ошибка получения товара",
-                        Status = StatusCodes.Status401Unauthorized,
+                        Status = StatusCodes.Status404NotFound,
                         Errors = new Dictionary<string, string[]>()
                         {
                                { "Product", ["Такого товара не существует"]}
@@ -68,6 +68,21 @@ namespace ImperialSanAPI.Controllers
                     };
 
                     return NotFound(productError);
+                }
+
+                if (product.QuantityInStock - dto.Quantity < 0)
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка добавления товара",
+                        Status = StatusCodes.Status400BadRequest,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такое количество товара отсутствует на складе"]}
+                        },
+                    };
+
+                    return BadRequest(productError);
                 }
 
                 var basket = context.Baskets
@@ -78,7 +93,7 @@ namespace ImperialSanAPI.Controllers
                 {
                     basket = new Basket
                     {
-                        BasketId = context.Baskets.Count() + 1,
+                        BasketId = context.Baskets.Count(),
                         UserId = userId
                     };
                     context.Baskets.Add(basket);
@@ -99,6 +114,7 @@ namespace ImperialSanAPI.Controllers
                     });
                 }
 
+                product.QuantityInStock -= dto.Quantity;
                 context.SaveChanges();
 
                 var basketDto = new BasketDTO
@@ -127,7 +143,35 @@ namespace ImperialSanAPI.Controllers
                                        .FirstOrDefault(p => p.BasketPositionId == positionId);
 
                 if (position?.Basket?.UserId != userId)
-                    return NotFound();
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения позиции",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такой позиции не существует в корзине"]}
+                        },
+                    };
+
+                    return NotFound(productError);
+                }
+
+                var product = context.Products.FirstOrDefault(p => p.ProductId == position.ProductId);
+                if (product.QuantityInStock - dto.Quantity < 0)
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка добавления товара",
+                        Status = StatusCodes.Status400BadRequest,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такое количество товара отсутствует на складе"]}
+                        },
+                    };
+
+                    return BadRequest(productError);
+                }
 
                 position.ProductQuantity = dto.Quantity;
                 context.SaveChanges();
