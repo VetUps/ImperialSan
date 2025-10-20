@@ -20,9 +20,10 @@ namespace ImperialSanAPI.Controllers
             {
                 List<OrderDTO> ordersDTO = new List<OrderDTO>();
 
-                var orders = context.Orders.Include(o => o.OrderPositions)
-                    .Where(o => o.UserId == userId)
-                    .ToList();
+                var orders = context.Orders
+                                    .Include(o => o.OrderPositions)
+                                    .Where(o => o.UserId == userId)
+                                    .ToList();
 
 
                 foreach (Order order in orders)
@@ -30,6 +31,12 @@ namespace ImperialSanAPI.Controllers
                     ordersDTO.Add(new OrderDTO
                     {
                         OrderId = order.OrderId,
+                        DateOfCreate = order.DateOfCreate,
+                        OrderStatus = order.OrderStatus,
+                        DiliveryAddres = order.DiliveryAddres,
+                        PaymentMethod = order.PaymentMethod,
+                        Price = order.Price,
+                        UserComment = order.UserComment,
                         Positions = order.OrderPositions.Select(op => new OrderPositionDTO
                         {
                             OrderPositionId = op.OrderPositionId,
@@ -50,12 +57,12 @@ namespace ImperialSanAPI.Controllers
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var basket = context.Baskets
+                var basketToDelete = context.Baskets
                                     .Include(b => b.BasketPositions)
                                     .ThenInclude(p => p.Product)
                                     .FirstOrDefault(b => b.UserId == userId);
 
-                if (basket == null || basket.BasketPositions.Count == 0)
+                if (basketToDelete == null || basketToDelete.BasketPositions.Count == 0)
                 {
                     UsualProblemDetails orderError = new()
                     {
@@ -79,13 +86,14 @@ namespace ImperialSanAPI.Controllers
                             UserId = userId,
                             DiliveryAddres = dto.DiliveryAddress,
                             PaymentMethod = dto.PaymentMethod,
-                            Price = basket.BasketPositions.Select(bp => bp.Product.Price).Sum(),
+                            Price = basketToDelete.BasketPositions.Select(bp => bp.Product.Price).Sum(),
                             UserComment = dto.UserComment
                         };
 
                         context.Orders.Add(newOrder);
+                        context.SaveChanges();
 
-                        foreach (BasketPosition bp in basket.BasketPositions)
+                        foreach (BasketPosition bp in basketToDelete.BasketPositions)
                         {
                             var newOrderPosition = new OrderPosition
                             {
@@ -96,9 +104,16 @@ namespace ImperialSanAPI.Controllers
                             };
 
                             context.OrderPositions.Add(newOrderPosition);
+                            context.SaveChanges();
                         }
 
+                        if (basketToDelete != null)
+                        {
+                            context.Baskets.Remove(basketToDelete);
+                        }
 
+                        context.SaveChanges();
+                        transaction.Commit();
                     }
 
                     catch (Exception ex)
@@ -108,28 +123,82 @@ namespace ImperialSanAPI.Controllers
                             Title = "Ошибка получения корзины",
                             Status = StatusCodes.Status500InternalServerError,
                             Errors = new Dictionary<string, string[]>()
-                        {
-                               { "Order", ["Не удалось сформировать заказ"]}
-                        },
+                            {
+                                   { "Order", [$"Не удалось сформировать заказ: {ex.Message}"]}
+                            },
                         };
 
-                        return NotFound(orderError);
+                        return BadRequest(orderError);
                     }
                 }
+
+                return Ok("Заказ успешно создан!");
 
             }
         }
 
-        // PUT api/<OrderController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // Изменить статус заказа 
+        [HttpPut("orders/change_status/{orderId}")]
+        public IActionResult Put(int id, [FromBody] UpdateOrderStatusDTO dto)
         {
+            using (ImperialSanContext context = new ImperialSanContext())
+            {
+                var order = context.Orders
+                                   .FirstOrDefault(o => o.OrderId == dto.OrderId);
+
+                if (order == null)
+                {
+                    UsualProblemDetails orderError = new()
+                    {
+                        Title = "Ошибка получения заказа",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                            {
+                                   { "Order", ["Заказ не найден"]}
+                            },
+                    };
+
+                    return NotFound(orderError);
+                }
+
+                order.OrderStatus = dto.NewOrderStatus;
+                context.Orders.Update(order);
+                context.SaveChanges();
+
+                return Ok("Статус заказа успешно изменён!");
+            }
         }
 
-        // DELETE api/<OrderController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // Отменить заказ 
+        [HttpDelete("orders/abort_order/{orderId}")]
+        public IActionResult Delete(int orderId)
         {
+            using (ImperialSanContext context = new ImperialSanContext())
+            {
+                var order = context.Orders
+                                   .FirstOrDefault(o => o.OrderId == orderId);
+
+                if (order == null)
+                {
+                    UsualProblemDetails orderError = new()
+                    {
+                        Title = "Ошибка получения заказа",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                            {
+                                   { "Order", ["Заказ не найден"]}
+                            },
+                    };
+
+                    return NotFound(orderError);
+                }
+
+                order.OrderStatus = "Отменён";
+                context.Orders.Update(order);
+                context.SaveChanges();
+
+                return Ok("Заказ успешно отменён!");
+            }
         }
     }
 }

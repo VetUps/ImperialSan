@@ -32,7 +32,7 @@ public partial class ImperialSanContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseLazyLoadingProxies().UseMySql("server=localhost;user=root;password=root;database=imperial_san", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.42-mysql"));
+        => optionsBuilder.UseMySql("server=localhost;user=root;password=root;database=imperial_san", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.42-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -48,9 +48,7 @@ public partial class ImperialSanContext : DbContext
 
             entity.HasIndex(e => e.UserId, "user_basket_fk_idx");
 
-            entity.Property(e => e.BasketId)
-                .ValueGeneratedNever()
-                .HasColumnName("basket_id");
+            entity.Property(e => e.BasketId).HasColumnName("basket_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Baskets)
@@ -64,13 +62,11 @@ public partial class ImperialSanContext : DbContext
 
             entity.ToTable("basket_position");
 
-            entity.HasIndex(e => e.ProductId, "basket_position_product_fk_idx");
+            entity.HasIndex(e => e.ProductId, "basket_position_product_fk");
 
             entity.HasIndex(e => e.BasketId, "basket_to_position_fk_idx");
 
-            entity.Property(e => e.BasketPositionId)
-                .ValueGeneratedNever()
-                .HasColumnName("basket_position_id");
+            entity.Property(e => e.BasketPositionId).HasColumnName("basket_position_id");
             entity.Property(e => e.BasketId).HasColumnName("basket_id");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.ProductQuantity)
@@ -79,6 +75,7 @@ public partial class ImperialSanContext : DbContext
 
             entity.HasOne(d => d.Basket).WithMany(p => p.BasketPositions)
                 .HasForeignKey(d => d.BasketId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("basket_to_position_fk");
 
             entity.HasOne(d => d.Product).WithMany(p => p.BasketPositions)
@@ -116,9 +113,7 @@ public partial class ImperialSanContext : DbContext
 
             entity.HasIndex(e => e.UserId, "order_user_fk_idx");
 
-            entity.Property(e => e.OrderId)
-                .ValueGeneratedNever()
-                .HasColumnName("order_id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.DateOfCreate)
                 .HasDefaultValueSql("curdate()")
                 .HasColumnName("date_of_create");
@@ -155,9 +150,7 @@ public partial class ImperialSanContext : DbContext
 
             entity.HasIndex(e => e.ProductId, "product_order_position_fk");
 
-            entity.Property(e => e.OrderPositionId)
-                .ValueGeneratedNever()
-                .HasColumnName("order_position_id");
+            entity.Property(e => e.OrderPositionId).HasColumnName("order_position_id");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.ProductPriceInMoment)
@@ -184,9 +177,7 @@ public partial class ImperialSanContext : DbContext
 
             entity.HasIndex(e => e.CategoryId, "category_fk_idx");
 
-            entity.Property(e => e.ProductId)
-                .ValueGeneratedNever()
-                .HasColumnName("product_id");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.BrandTitle)
                 .HasMaxLength(50)
                 .HasColumnName("brand_title");
@@ -225,9 +216,7 @@ public partial class ImperialSanContext : DbContext
 
             entity.HasIndex(e => e.UserMail, "user_mail_UNIQUE").IsUnique();
 
-            entity.Property(e => e.UserId)
-                .ValueGeneratedNever()
-                .HasColumnName("user_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.DiliveryAddress)
                 .HasColumnType("text")
                 .HasColumnName("dilivery_address");

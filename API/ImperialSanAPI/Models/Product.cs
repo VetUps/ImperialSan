@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace ImperialSanAPI.Models;
 
@@ -26,11 +25,9 @@ public partial class Product
 
     public bool? IsActive { get; set; }
 
-    [JsonIgnore]
     public virtual ICollection<BasketPosition> BasketPositions { get; set; } = new List<BasketPosition>();
 
     public virtual Category? Category { get; set; }
 
-    [JsonIgnore]
     public virtual ICollection<OrderPosition> OrderPositions { get; set; } = new List<OrderPosition>();
 }
