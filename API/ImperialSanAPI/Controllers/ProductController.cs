@@ -113,15 +113,27 @@ namespace ImperialSanAPI.Controllers
             {
                 var product = context.Products.Find(id);
                 if (product == null)
-                    return NotFound();
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения товара",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такого товара не существует"]}
+                        },
+                    };
+
+                    return NotFound(productError);
+                }
 
                 var category = context.Categories.FirstOrDefault(c => c.CategoryId == dto.CategoryId);
-                if (product == null)
+                if (category == null)
                 {
                     UsualProblemDetails productError = new()
                     {
                         Title = "Ошибка получения категории товара",
-                        Status = StatusCodes.Status401Unauthorized,
+                        Status = StatusCodes.Status404NotFound,
                         Errors = new Dictionary<string, string[]>()
                         {
                                { "Category", ["Такой категории не существует"]}
@@ -141,7 +153,7 @@ namespace ImperialSanAPI.Controllers
 
                 context.SaveChanges();
 
-                return NoContent();
+                return Ok();
             }
         }
 
