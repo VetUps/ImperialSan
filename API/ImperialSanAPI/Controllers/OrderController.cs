@@ -131,7 +131,7 @@ namespace ImperialSanAPI.Controllers
                     {
                         UsualProblemDetails orderError = new()
                         {
-                            Title = "Ошибка получения корзины",
+                            Title = "Ошибка формирования заказа",
                             Status = StatusCodes.Status500InternalServerError,
                             Errors = new Dictionary<string, string[]>()
                             {
@@ -150,7 +150,7 @@ namespace ImperialSanAPI.Controllers
 
         // Изменить статус заказа 
         [HttpPut("change_status/{orderId}")]
-        public IActionResult Put(int id, [FromBody] UpdateOrderStatusDTO dto)
+        public IActionResult Put(int orderId, [FromBody] UpdateOrderStatusDTO dto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
