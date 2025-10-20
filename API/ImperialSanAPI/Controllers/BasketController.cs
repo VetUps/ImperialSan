@@ -13,7 +13,7 @@ namespace ImperialSanAPI.Controllers
     public class BasketController : ControllerBase
     {
         // Получить корзину пользователя
-        [HttpGet("basket/{userId}")]
+        [HttpGet("{userId}")]
         public ActionResult<BasketDTO> GetBasket(int userId)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -49,7 +49,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Добавить товар в корзину
-        [HttpPost("basket/{userId}/items")]
+        [HttpPost("{userId}/items")]
         public ActionResult<BasketDTO> AddBasketPosition(int userId, [FromBody] AddToBasketDTO dto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -133,7 +133,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Обновить позицию
-        [HttpPut("basket/{userId}/items/{positionId}")]
+        [HttpPut("{userId}/items/{positionId}")]
         public ActionResult<BasketDTO> UpdateBasketPosition(int userId, int positionId, [FromBody] UpdateBasketPositionDTO dto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -197,7 +197,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Удалить позицию
-        [HttpDelete("basket/{userId}/items/{positionId}")]
+        [HttpDelete("{userId}/items/{positionId}")]
         public ActionResult<BasketDTO> RemoveBasketPosition(int userId, int positionId)
         {
             using (ImperialSanContext context = new ImperialSanContext())

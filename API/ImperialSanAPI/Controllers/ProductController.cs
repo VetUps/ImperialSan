@@ -2,6 +2,7 @@
 using ImperialSanAPI.Models;
 using ImperialSanAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -44,7 +45,9 @@ namespace ImperialSanAPI.Controllers
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var product = context.Products.FirstOrDefault(p => p.ProductId == id);
+                var product = context.Products
+                                     .Include(p => p.Category)
+                                     .FirstOrDefault(p => p.ProductId == id);
 
                 if (product == null)
                     return NotFound();

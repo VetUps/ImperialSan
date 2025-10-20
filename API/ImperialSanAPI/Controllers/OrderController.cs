@@ -13,7 +13,7 @@ namespace ImperialSanAPI.Controllers
     public class OrderController : ControllerBase
     {
         // Получить заказы пользователя
-        [HttpGet("orders/{userId}")]
+        [HttpGet("{userId}")]
         public ActionResult<List<OrderDTO>> GetOrders(int userId)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -52,7 +52,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Сделать заказ 
-        [HttpPost("orders/make_order/{userId}")]
+        [HttpPost("make_order/{userId}")]
         public IActionResult MakeOrder(int userId, [FromBody] MakeOrderDTO dto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -138,7 +138,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Изменить статус заказа 
-        [HttpPut("orders/change_status/{orderId}")]
+        [HttpPut("change_status/{orderId}")]
         public IActionResult Put(int id, [FromBody] UpdateOrderStatusDTO dto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -170,7 +170,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Отменить заказ 
-        [HttpDelete("orders/abort_order/{orderId}")]
+        [HttpDelete("abort_order/{orderId}")]
         public IActionResult Delete(int orderId)
         {
             using (ImperialSanContext context = new ImperialSanContext())

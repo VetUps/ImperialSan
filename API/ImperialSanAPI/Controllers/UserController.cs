@@ -13,7 +13,7 @@ namespace ImperialSanAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        // GET: api/users
+        // Получение всех пользователей
         [HttpGet]
         public ActionResult<List<User>> GetUsers()
         {
@@ -35,7 +35,7 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // GET: api/users/*id*
+        // Получение одного пользователя
         [HttpGet("{userId}")]
         public ActionResult<User> GetUser(int userId)
         {
@@ -59,7 +59,7 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // POST: api/users/login
+        // Авторизация пользователя
         [HttpPost("login")]
         public ActionResult<UserAnswerDTO> Login([FromBody] LoginUserDTO dto)
         {
@@ -88,7 +88,7 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // POST: api/users/register
+        // Регистрация пользователя
         [HttpPost("register")]
         public ActionResult<User> RegisterUser([FromBody] RegisterUserDTO dto)
         {
@@ -117,7 +117,7 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // PUT: api/users/5
+        // Изменение данных пользователя
         [HttpPut("{userId}")]
         public IActionResult UpdateUser(int userId, [FromBody] UpdateUserDto dto)
         {
