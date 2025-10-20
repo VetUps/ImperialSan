@@ -40,8 +40,8 @@ namespace ImperialSanAPI.Controllers
                         Positions = order.OrderPositions.Select(op => new OrderPositionDTO
                         {
                             OrderPositionId = op.OrderPositionId,
-                            ProductId = op.ProductId ?? 0,
-                            ProductQuantity = op.ProductQuantity ?? 0,
+                            ProductId = op.ProductId,
+                            ProductQuantity = op.ProductQuantity,
                             ProductPriceInMoment = op.ProductPriceInMoment,
                         }).ToList()
                     });
@@ -95,12 +95,23 @@ namespace ImperialSanAPI.Controllers
 
                         foreach (BasketPosition bp in basketToDelete.BasketPositions)
                         {
+                            var product = context.Products.FirstOrDefault(p => p.ProductId == bp.ProductId);
+                            if (product == null)
+                            {
+                                throw new Exception($"Товара #{bp.ProductId} больше не существует");
+                            }
+
+                            if (bp.ProductQuantity > product.QuantityInStock)
+                            {
+                                throw new Exception($"Максимум можно заказать {product.QuantityInStock} шт. товара #{product.ProductId} {product.ProductTitle}");
+                            }
+
                             var newOrderPosition = new OrderPosition
                             {
                                 OrderId = newOrder.OrderId,
                                 ProductId = bp.ProductId,
                                 ProductQuantity = bp.ProductQuantity,
-                                ProductPriceInMoment = context.Products.FirstOrDefault(p => p.ProductId == bp.ProductId).Price
+                                ProductPriceInMoment = product.Price
                             };
 
                             context.OrderPositions.Add(newOrderPosition);

@@ -70,21 +70,6 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(productError);
                 }
 
-                if (product.QuantityInStock - dto.Quantity < 0)
-                {
-                    UsualProblemDetails productError = new()
-                    {
-                        Title = "Ошибка добавления товара",
-                        Status = StatusCodes.Status400BadRequest,
-                        Errors = new Dictionary<string, string[]>()
-                        {
-                               { "Product", ["Такое количество товара отсутствует на складе"]}
-                        },
-                    };
-
-                    return BadRequest(productError);
-                }
-
                 var basket = context.Baskets
                                     .Include(b => b.BasketPositions)
                                     .FirstOrDefault(b => b.UserId == userId);
@@ -114,7 +99,7 @@ namespace ImperialSanAPI.Controllers
                     });
                 }
 
-                product.QuantityInStock -= dto.Quantity;
+                //product.QuantityInStock -= dto.Quantity;
                 context.SaveChanges();
 
                 var basketDto = new BasketDTO
@@ -155,22 +140,6 @@ namespace ImperialSanAPI.Controllers
                     };
 
                     return NotFound(productError);
-                }
-
-                var product = context.Products.FirstOrDefault(p => p.ProductId == position.ProductId);
-                if (product.QuantityInStock - dto.Quantity < 0)
-                {
-                    UsualProblemDetails productError = new()
-                    {
-                        Title = "Ошибка добавления товара",
-                        Status = StatusCodes.Status400BadRequest,
-                        Errors = new Dictionary<string, string[]>()
-                        {
-                               { "Product", ["Такое количество товара отсутствует на складе"]}
-                        },
-                    };
-
-                    return BadRequest(productError);
                 }
 
                 position.ProductQuantity = dto.Quantity;
@@ -218,7 +187,7 @@ namespace ImperialSanAPI.Controllers
                         },
                     };
 
-                    return NotFound();
+                    return NotFound(productError);
                 }
 
                 context.BasketPositions.Remove(position);
