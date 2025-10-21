@@ -4,6 +4,8 @@ namespace ImperialSanAPI.DTOs.ProductDTO
 {
     public class UpdateProductDTO
     {
+        [Required(ErrorMessage = "Чтобы изменить товар, ID должен быть указан")]
+        public int ProductId { get; set; }
         [Required(ErrorMessage = "Название нельзя имзенить на пустое")]
         [MaxLength(255, ErrorMessage = "Слишком длинное название")]
         public string ProductTitle { get; set; } = null!;

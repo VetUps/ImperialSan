@@ -52,15 +52,15 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Сделать заказ 
-        [HttpPost("make_order/{userId}")]
-        public IActionResult MakeOrder(int userId, [FromBody] MakeOrderDTO dto)
+        [HttpPost("make_order")]
+        public IActionResult MakeOrder([FromBody] MakeOrderDTO makeOrderDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 var basketToDelete = context.Baskets
                                     .Include(b => b.BasketPositions)
                                     .ThenInclude(p => p.Product)
-                                    .FirstOrDefault(b => b.UserId == userId);
+                                    .FirstOrDefault(b => b.UserId == makeOrderDto.UserId);
 
                 if (basketToDelete == null || basketToDelete.BasketPositions.Count == 0)
                 {
@@ -83,11 +83,11 @@ namespace ImperialSanAPI.Controllers
                     {
                         var newOrder = new Order
                         {
-                            UserId = userId,
-                            DiliveryAddres = dto.DiliveryAddress,
-                            PaymentMethod = dto.PaymentMethod,
+                            UserId = makeOrderDto.UserId,
+                            DiliveryAddres = makeOrderDto.DiliveryAddress,
+                            PaymentMethod = makeOrderDto.PaymentMethod,
                             Price = basketToDelete.BasketPositions.Select(bp => bp.Product.Price).Sum(),
-                            UserComment = dto.UserComment
+                            UserComment = makeOrderDto.UserComment
                         };
 
                         context.Orders.Add(newOrder);
@@ -149,13 +149,13 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Изменить статус заказа 
-        [HttpPut("change_status/{orderId}")]
-        public IActionResult Put(int orderId, [FromBody] UpdateOrderStatusDTO dto)
+        [HttpPut("change_status")]
+        public IActionResult Put([FromBody] UpdateOrderStatusDTO updateOrderStatusDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 var order = context.Orders
-                                   .FirstOrDefault(o => o.OrderId == dto.OrderId);
+                                   .FirstOrDefault(o => o.OrderId == updateOrderStatusDto.OrderId);
 
                 if (order == null)
                 {
@@ -172,7 +172,7 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(orderError);
                 }
 
-                order.OrderStatus = dto.NewOrderStatus;
+                order.OrderStatus = updateOrderStatusDto.NewOrderStatus;
                 context.Orders.Update(order);
                 context.SaveChanges();
 
@@ -181,13 +181,13 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Отменить заказ 
-        [HttpDelete("abort_order/{orderId}")]
-        public IActionResult Delete(int orderId)
+        [HttpDelete("abort_order")]
+        public IActionResult Delete([FromBody] AbortOrderDTO abortOrderDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 var order = context.Orders
-                                   .FirstOrDefault(o => o.OrderId == orderId);
+                                   .FirstOrDefault(o => o.OrderId == abortOrderDto.OrderId);
 
                 if (order == null)
                 {

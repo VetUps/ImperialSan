@@ -12,7 +12,7 @@ namespace ImperialSanAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        // GET: api/products
+        // Получение всех товаров
         [HttpGet]
         public ActionResult<List<CatalogProductDTO>> GetProducts()
         {
@@ -39,18 +39,30 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // GET: api/products/*id*
-        [HttpGet("{id}")]
-        public ActionResult<CatalogProductDTO> GetProduct(int id)
+        // Получение товара
+        [HttpGet("{productId}")]
+        public ActionResult<CatalogProductDTO> GetProduct(int productId)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 var product = context.Products
                                      .Include(p => p.Category)
-                                     .FirstOrDefault(p => p.ProductId == id);
+                                     .FirstOrDefault(p => p.ProductId == productId);
 
                 if (product == null)
-                    return NotFound();
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения товара",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такого товара не существует"]}
+                        },
+                    };
+
+                    return NotFound(productError);
+                }
 
                 CatalogProductDTO productDTO = new CatalogProductDTO
                 {
@@ -72,30 +84,54 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // POST api/produts
-        [HttpPost]
-        public ActionResult<CatalogProductDTO> Post([FromBody] AddProductDTO dto)
+        // Добавление нового товара
+        [HttpPost("add_product")]
+        public ActionResult<CatalogProductDTO> Post([FromBody] AddProductDTO addProductDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                if (context.Products.Any(u => u.ProductTitle == dto.ProductTitle))
-                    return Conflict("Название уже занят");
+                if (context.Products.Where(p => p.BrandTitle == addProductDto.BrandTitle).Any(u => u.ProductTitle == addProductDto.ProductTitle))
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения товара",
+                        Status = StatusCodes.Status409Conflict,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Товар с таким названием у этого бренда уже есть"]}
+                        },
+                    };
 
-                if (!context.Categories.Any(c => c.CategoryId ==  dto.CategoryId))
-                    return Conflict("Такой категории не существует");
+                    return Conflict(productError);
+                }
+
+                if (!context.Categories.Any(c => c.CategoryId ==  addProductDto.CategoryId))
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения кагетории",
+                        Status = StatusCodes.Status409Conflict,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Category", ["Такой категории не существует"]}
+                        },
+                    };
+
+                    return Conflict(productError);
+                }
 
                 var product = new Product
                 {
                     ProductId = context.Products.Count(),
-                    ProductTitle = dto.ProductTitle,
-                    ProductDescription = dto.ProductDescription,
-                    Price = dto.Price,
-                    QuantityInStock = dto.QuantityInStock,
-                    ImageUrl = dto.ImageUrl,
-                    CategoryId = dto.CategoryId,
-                    BrandTitle = dto.BrandTitle,
-                    DateOfCreate = dto.DateOfCreate,
-                    IsActive = dto.IsActive,
+                    ProductTitle = addProductDto.ProductTitle,
+                    ProductDescription = addProductDto.ProductDescription,
+                    Price = addProductDto.Price,
+                    QuantityInStock = addProductDto.QuantityInStock,
+                    ImageUrl = addProductDto.ImageUrl,
+                    CategoryId = addProductDto.CategoryId,
+                    BrandTitle = addProductDto.BrandTitle,
+                    DateOfCreate = addProductDto.DateOfCreate,
+                    IsActive = addProductDto.IsActive,
                 };
 
                 context.Products.Add(product);
@@ -105,13 +141,13 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // PUT api/products/*id*
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateProductDTO dto)
+        // Редактирование товара
+        [HttpPut("update_product")]
+        public IActionResult Put([FromBody] UpdateProductDTO updateProductDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var product = context.Products.Find(id);
+                var product = context.Products.Find(updateProductDto.ProductId);
                 if (product == null)
                 {
                     UsualProblemDetails productError = new()
@@ -127,29 +163,43 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(productError);
                 }
 
-                var category = context.Categories.FirstOrDefault(c => c.CategoryId == dto.CategoryId);
-                if (category == null)
+                if (context.Products.Where(p => p.BrandTitle == updateProductDto.BrandTitle).Any(u => u.ProductTitle == updateProductDto.ProductTitle))
                 {
                     UsualProblemDetails productError = new()
                     {
-                        Title = "Ошибка получения категории товара",
-                        Status = StatusCodes.Status404NotFound,
+                        Title = "Ошибка получения товара",
+                        Status = StatusCodes.Status409Conflict,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Товар с таким названием у этого бренда уже есть"]}
+                        },
+                    };
+
+                    return Conflict(productError);
+                }
+
+                if (!context.Categories.Any(c => c.CategoryId == updateProductDto.CategoryId))
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения кагетории",
+                        Status = StatusCodes.Status409Conflict,
                         Errors = new Dictionary<string, string[]>()
                         {
                                { "Category", ["Такой категории не существует"]}
                         },
                     };
 
-                    return NotFound(productError);
+                    return Conflict(productError);
                 }
 
-                product.ProductTitle = dto.ProductTitle;
-                product.ProductDescription = dto.ProductDescription;
-                product.Price = dto.Price;
-                product.QuantityInStock = dto.QuantityInStock;
-                product.ImageUrl = dto.ImageUrl;
-                product.CategoryId = dto.CategoryId;
-                product.BrandTitle = dto.BrandTitle;
+                product.ProductTitle = updateProductDto.ProductTitle;
+                product.ProductDescription = updateProductDto.ProductDescription;
+                product.Price = updateProductDto.Price;
+                product.QuantityInStock = updateProductDto.QuantityInStock;
+                product.ImageUrl = updateProductDto.ImageUrl;
+                product.CategoryId = updateProductDto.CategoryId;
+                product.BrandTitle = updateProductDto.BrandTitle;
 
                 context.SaveChanges();
 
@@ -157,16 +207,27 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // DELETE: api/products/*id*
-        [HttpDelete("{id}")]
-        public ActionResult DeleteProduct(int id)
+        // Удаление (изменение статуса) товара
+        [HttpDelete("delete_product")]
+        public IActionResult DeleteProduct([FromBody] DeleteProductDTO deleteProductDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var product = context.Products.FirstOrDefault(p => p.ProductId == id);
-
+                var product = context.Products.Find(deleteProductDto.ProductId);
                 if (product == null)
-                    return NotFound();
+                {
+                    UsualProblemDetails productError = new()
+                    {
+                        Title = "Ошибка получения товара",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Product", ["Такого товара не существует"]}
+                        },
+                    };
+
+                    return NotFound(productError);
+                }
 
                 product.IsActive = false;
                 context.SaveChanges();

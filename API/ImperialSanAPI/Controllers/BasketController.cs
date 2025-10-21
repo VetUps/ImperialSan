@@ -49,7 +49,7 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Добавить товар в корзину
-        [HttpPost("{userId}/items")]
+        [HttpPost("{userId}/add_position")]
         public ActionResult<BasketDTO> AddBasketPosition(int userId, [FromBody] AddToBasketDTO dto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
@@ -118,14 +118,14 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Обновить позицию
-        [HttpPut("{userId}/items/{positionId}")]
-        public ActionResult<BasketDTO> UpdateBasketPosition(int userId, int positionId, [FromBody] UpdateBasketPositionDTO dto)
+        [HttpPut("{userId}/update_position")]
+        public ActionResult<BasketDTO> UpdateBasketPosition(int userId, [FromBody] UpdateBasketPositionDTO updateBasketPositionDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 var position = context.BasketPositions
                                        .Include(p => p.Basket)
-                                       .FirstOrDefault(p => p.BasketPositionId == positionId);
+                                       .FirstOrDefault(p => p.BasketPositionId == updateBasketPositionDto.BasketPositionId);
 
                 if (position?.Basket?.UserId != userId)
                 {
@@ -142,7 +142,7 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(productError);
                 }
 
-                position.ProductQuantity = dto.Quantity;
+                position.ProductQuantity = updateBasketPositionDto.Quantity;
                 context.SaveChanges();
 
                 var basket = context.Baskets
@@ -166,14 +166,14 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Удалить позицию
-        [HttpDelete("{userId}/items/{positionId}")]
-        public ActionResult<BasketDTO> RemoveBasketPosition(int userId, int positionId)
+        [HttpDelete("{userId}/delete_position")]
+        public ActionResult<BasketDTO> RemoveBasketPosition(int userId, [FromBody] DeleteBasketPositionDTO deleteBasketPositionDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 var position = context.BasketPositions
                                       .Include(p => p.Basket)
-                                      .FirstOrDefault(p => p.BasketPositionId == positionId);
+                                      .FirstOrDefault(p => p.BasketPositionId == deleteBasketPositionDto.BasketPositionId);
 
                 if (position?.Basket?.UserId != userId)
                 {

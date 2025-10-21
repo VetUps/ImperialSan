@@ -1,9 +1,7 @@
-﻿using ImperialSanAPI.DTOs.BasketDTO;
-using ImperialSanAPI.DTOs.UserDTO;
+﻿using ImperialSanAPI.DTOs.UserDTO;
 using ImperialSanAPI.Models;
 using ImperialSanAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,7 +33,7 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
-        // Получение одного пользователя
+        // Получение пользователя
         [HttpGet("{userId}")]
         public ActionResult<User> GetUser(int userId)
         {
@@ -53,7 +51,19 @@ namespace ImperialSanAPI.Controllers
                 }).FirstOrDefault(u => u.UserId == userId);
 
                 if (user == null)
-                    return NotFound();
+                {
+                    UsualProblemDetails userError = new()
+                    {
+                        Title = "Ошибка получения пользователя",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "User", ["Такого пользователя не существует"]}
+                        },
+                    };
+
+                    return NotFound(userError);
+                }
 
                 return Ok(user);
             }
@@ -61,12 +71,12 @@ namespace ImperialSanAPI.Controllers
 
         // Авторизация пользователя
         [HttpPost("login")]
-        public ActionResult<UserAnswerDTO> Login([FromBody] LoginUserDTO dto)
+        public ActionResult<UserAnswerDTO> Login([FromBody] LoginUserDTO loginUserDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 // Находим пользователя по email
-                var user = context.Users.FirstOrDefault(u => u.UserMail == dto.Email);
+                var user = context.Users.FirstOrDefault(u => u.UserMail == loginUserDto.Email);
 
                 UsualProblemDetails loginError = new()
                 {
@@ -81,7 +91,7 @@ namespace ImperialSanAPI.Controllers
                 if (user == null)
                     return Unauthorized(loginError);
 
-                if (!SecurityService.VerifyPassword(dto.Password, user.PasswordHash))
+                if (!SecurityService.VerifyPassword(loginUserDto.Password, user.PasswordHash))
                     return Unauthorized(loginError);
 
                 return Ok(user.UserId);
@@ -90,24 +100,36 @@ namespace ImperialSanAPI.Controllers
 
         // Регистрация пользователя
         [HttpPost("register")]
-        public ActionResult<User> RegisterUser([FromBody] RegisterUserDTO dto)
+        public ActionResult<int> RegisterUser([FromBody] RegisterUserDTO registerUserDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                if (context.Users.Any(u => u.UserMail == dto.Email))
+                if (context.Users.Any(u => u.UserMail == registerUserDto.Email))
+                {
+                    UsualProblemDetails registerError = new()
+                    {
+                        Title = "Ошибка регистрации",
+                        Status = StatusCodes.Status401Unauthorized,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Mail", ["Такой email уже занят"]}
+                        },
+                    };
+
                     return Conflict("Email уже занят");
+                }
 
                 int user_id = context.Users.ToList().Count();
 
                 var user = new User
                 {
                     UserId = user_id,
-                    UserMail = dto.Email,
-                    UserName = dto.Name,
-                    UserSurname = dto.Surname,
-                    UserPhone = dto.Phone,
+                    UserMail = registerUserDto.Email,
+                    UserName = registerUserDto.Name,
+                    UserSurname = registerUserDto.Surname,
+                    UserPhone = registerUserDto.Phone,
                     Role = "User",
-                    PasswordHash = SecurityService.HashPassword(dto.Password)
+                    PasswordHash = SecurityService.HashPassword(registerUserDto.Password)
                 };
 
                 context.Users.Add(user);
@@ -118,29 +140,41 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Изменение данных пользователя
-        [HttpPut("{userId}")]
-        public IActionResult UpdateUser(int userId, [FromBody] UpdateUserDto dto)
+        [HttpPut]
+        public IActionResult UpdateUser([FromBody] UpdateUserDto updateUserDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var user = context.Users.Find(userId);
+                var user = context.Users.Find(updateUserDto.UserId);
                 if (user == null)
-                    return NotFound();
-
-                user.UserSurname = dto.Surname ?? user.UserSurname;
-                user.UserName = dto.Name ?? user.UserName;
-                user.UserPatronymic = dto.Patronymic;
-                user.UserPhone = dto.Phone ?? user.UserPhone;
-                user.DiliveryAddress = dto.DeliveryAddress;
-
-                if (!string.IsNullOrEmpty(dto.NewPassword))
                 {
-                    user.PasswordHash = SecurityService.HashPassword(dto.NewPassword);
+                    UsualProblemDetails userError = new()
+                    {
+                        Title = "Ошибка получения пользователя",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "User", ["Такого пользователя не существует"]}
+                        },
+                    };
+
+                    return NotFound(userError);
+                }
+
+                user.UserSurname = updateUserDto.Surname;
+                user.UserName = updateUserDto.Name;
+                user.UserPatronymic = updateUserDto.Patronymic;
+                user.UserPhone = updateUserDto.Phone;
+                user.DiliveryAddress = updateUserDto.DeliveryAddress;
+
+                if (!string.IsNullOrEmpty(updateUserDto.NewPassword))
+                {
+                    user.PasswordHash = SecurityService.HashPassword(updateUserDto.NewPassword);
                 }
 
                 context.SaveChanges();
 
-                return NoContent();
+                return Ok();
             }
         }
     }

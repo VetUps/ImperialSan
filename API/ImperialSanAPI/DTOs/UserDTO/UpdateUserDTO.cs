@@ -4,6 +4,8 @@ namespace ImperialSanAPI.DTOs.UserDTO
 {
     public class UpdateUserDto
     {
+        [Required(ErrorMessage = "Чтобы изменить пользователя, ID должен быть указан")]
+        public int UserId { get; set; }
         [Required(ErrorMessage = "Фамилия не может быть пустой")]
         [MaxLength(100, ErrorMessage = "Фамилия слишком длиная")]
         public string? Surname { get; set; }
@@ -20,8 +22,6 @@ namespace ImperialSanAPI.DTOs.UserDTO
         public string? Phone { get; set; }
 
         public string? DeliveryAddress { get; set; }
-
-        [MinLength(6, ErrorMessage = "Пароль должен состоять минимум из 6 символов")]
         public string? NewPassword { get; set; }
     }
 }
