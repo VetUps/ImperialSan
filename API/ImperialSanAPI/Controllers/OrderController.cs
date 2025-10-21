@@ -204,6 +204,21 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(orderError);
                 }
 
+                if (order.OrderStatus != "В обработке")
+                {
+                    UsualProblemDetails orderError = new()
+                    {
+                        Title = "Ошибка отмены заказа",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                            {
+                                   { "Order", [$"Заказ нельзя отменить, т.к. он уже в стадии \"{order.OrderStatus}\""]}
+                            },
+                    };
+
+                    return NotFound(orderError);
+                }
+
                 order.OrderStatus = "Отменён";
                 context.Orders.Update(order);
                 context.SaveChanges();

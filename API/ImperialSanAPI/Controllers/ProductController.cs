@@ -137,7 +137,7 @@ namespace ImperialSanAPI.Controllers
                 context.Products.Add(product);
                 context.SaveChanges();
 
-                return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId}, product);
+                return Ok();
             }
         }
 
@@ -163,7 +163,8 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(productError);
                 }
 
-                if (context.Products.Where(p => p.BrandTitle == updateProductDto.BrandTitle).Any(u => u.ProductTitle == updateProductDto.ProductTitle))
+                if (context.Products.Where(p => p.BrandTitle == updateProductDto.BrandTitle && p.ProductId != updateProductDto.ProductId)
+                                    .Any(u => u.ProductTitle == updateProductDto.ProductTitle))
                 {
                     UsualProblemDetails productError = new()
                     {
