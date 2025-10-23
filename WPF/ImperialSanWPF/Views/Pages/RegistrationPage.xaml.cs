@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -28,11 +29,6 @@ namespace ImperialSanWPF.Views.Pages
             InitializeComponent();
         }
 
-        private static HttpClient httpClient = new()
-        {
-            BaseAddress = new Uri("http://localhost:5020/api/"),
-        };
-
         private async void registrationButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -48,42 +44,36 @@ namespace ImperialSanWPF.Views.Pages
                     phone = phoneTextBox.Text
                 };
 
-                using StringContent jsonContent = new(
-                    JsonSerializer.Serialize(registerModel),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
-                using HttpResponseMessage response = await httpClient.PostAsync("User/register", jsonContent);
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.PostAsJsonAsync("User/register", registerModel);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     
-                    MessageBox.Show("Вы зарегестрированы");
+                    MessageBox.Show($"Вы зарегестрированы: {jsonResponse}");
                     NavigationService.Navigate(new LoginPage());
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    var errorResponse = JsonSerializer.Deserialize<ValidationErrorResponse>(
-                        errorContent,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                        );
+                    List<string> errorOrder = ["Email", "Password", "RepeatPassword", "Surname", "Name", "Patronymic", "Phone"];
+                    var errorResponse= await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
                     if (errorResponse.Errors != null)
                     {
                         List<string> errorMessages = new List<string>();
 
-                        foreach (var error in errorResponse.Errors)
-                            errorMessages.Add(error.Value[0]);
+                        foreach (var error in errorOrder)
+                        {
+                            if (errorResponse.Errors.TryGetValue(error, out string[] values))
+                                errorMessages.Add(values[0]);
+                        }
 
                         MessageBox.Show(errorMessages[0]);
                     }
 
                     else
                     {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorContent}");
+                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
                     }
                 }
             }
