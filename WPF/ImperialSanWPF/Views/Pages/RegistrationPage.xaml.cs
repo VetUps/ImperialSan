@@ -24,9 +24,12 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class RegistrationPage : Page
     {
-        public RegistrationPage()
+        private readonly MainWindow _mainWindow;
+
+        public RegistrationPage(MainWindow mainWindow)
         {
             InitializeComponent();
+            _mainWindow = mainWindow;
         }
 
         private async void registrationButton_Click(object sender, RoutedEventArgs e)
@@ -51,7 +54,7 @@ namespace ImperialSanWPF.Views.Pages
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     
                     MessageBox.Show($"Вы зарегестрированы: {jsonResponse}");
-                    NavigationService.Navigate(new LoginPage());
+                    NavigationService.Navigate(new LoginPage(_mainWindow));
                 }
                 else
                 {
@@ -85,7 +88,7 @@ namespace ImperialSanWPF.Views.Pages
 
         private void haveAccountButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new LoginPage());
+            NavigationService.Navigate(new LoginPage(_mainWindow));
         }
     }
 }

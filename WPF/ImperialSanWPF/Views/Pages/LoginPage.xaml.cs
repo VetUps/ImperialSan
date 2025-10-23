@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -23,15 +24,24 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class LoginPage : Page
     {
-        public LoginPage()
+        private readonly MainWindow _mainWindow;
+
+        public LoginPage(MainWindow mainWindow)
         {
             InitializeComponent();
+            _mainWindow = mainWindow;
         }
 
         private static HttpClient httpClient = new()
         {
             BaseAddress = new Uri("http://localhost:5020/api/"),
         };
+
+        private void OnLoginSuccess()
+        {
+            _mainWindow.SetLoginState(true);
+            //NavigationService.Navigate(new CatalogPage());
+        }
 
         private async void loginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -43,27 +53,17 @@ namespace ImperialSanWPF.Views.Pages
                     password = passwordTextBox.Password,
                 };
 
-                using StringContent jsonContent = new(
-                    JsonSerializer.Serialize(loginModel),
-                    Encoding.UTF8,
-                    "application/json"
-                    );
-
-                using HttpResponseMessage response = await httpClient.PostAsync("User/login", jsonContent);
+                using HttpResponseMessage response = await httpClient.PostAsJsonAsync("User/login", loginModel);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     SessionContext.UserId = Convert.ToInt32(jsonResponse);
-                    MessageBox.Show("Успешно");
+                    OnLoginSuccess();
                 }
                 else
                 {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    var errorResponse = JsonSerializer.Deserialize<ValidationErrorResponse>(
-                        errorContent,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                        );
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
                     if (errorResponse.Errors != null)
                     {
@@ -77,7 +77,7 @@ namespace ImperialSanWPF.Views.Pages
 
                     else
                     {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorContent}");
+                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace ImperialSanWPF.Views.Pages
 
         private void registartionButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new RegistrationPage());
+            NavigationService.Navigate(new RegistrationPage(_mainWindow));
         }
     }
 }

@@ -21,9 +21,18 @@
             <ColumnDefinition Width="100*"/>
         </Grid.ColumnDefinitions>
         
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="White" VerticalAlignment="Center">
-            <Image Source="/Resources/Images/logo.png" Height="80" Width="80"/>
-            <TextBlock Text="Авторизация" FontSize="28" HorizontalAlignment="Center" Margin="10"/>
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="1" 
+                    Orientation="Vertical" 
+                    Background="White" 
+                    VerticalAlignment="Center">
+            <Image Source="/Resources/Images/logo.png" 
+                   Height="80" 
+                   Width="80"/>
+            <TextBlock Text="Авторизация" 
+                       FontSize="28" 
+                       HorizontalAlignment="Center" 
+                       Margin="10"/>
             <TextBox x:Name="emailTextBox"
                      materialDesign:HintAssist.Hint="Введите почту" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
@@ -61,7 +70,8 @@
                     Background="Transparent"
                     BorderThickness="0"
                     Margin="80,10,380,10"
-                    Click="registartionButton_Click" Cursor="Hand"/>
+                    Click="registartionButton_Click" 
+                    Cursor="Hand"/>
         </StackPanel>
     </Grid>
 </Page>

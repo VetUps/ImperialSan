@@ -12,7 +12,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50*"/>
-            <RowDefinition Height="400*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="50*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -21,19 +21,28 @@
             <ColumnDefinition Width="100*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="White" VerticalAlignment="Center">
-            <Image Source="/Resources/Images/logo.png" Height="80" Width="80"/>
-            <TextBlock Text="Регистрация" FontSize="28" HorizontalAlignment="Center" Margin="10"/>
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="1" 
+                    Orientation="Vertical" 
+                    Background="White" 
+                    Margin="0,23,0,23">
+            <Image Source="/Resources/Images/logo.png" 
+                   Height="80" 
+                   Width="80"/>
+            <TextBlock Text="Регистрация" 
+                       FontSize="28" 
+                       HorizontalAlignment="Center" 
+                       Margin="10"/>
             <TextBox x:Name="emailTextBox"
-                 materialDesign:HintAssist.Hint="Введите почту" 
-                 materialDesign:HintAssist.Foreground="#7B7B7B"
-                 materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                 FontSize="16" 
-                 BorderBrush="#7B7B7B"
-                 Foreground="#7B7B7B"
-                 Margin="80,10,80,10"
-                 MaxLength="100"/>
+                     materialDesign:HintAssist.Hint="Введите почту" 
+                     materialDesign:HintAssist.Foreground="#7B7B7B"
+                     materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     FontSize="16" 
+                     BorderBrush="#7B7B7B"
+                     Foreground="#7B7B7B"
+                     Margin="80,10,80,10"
+                     MaxLength="100"/>
 
 
             <PasswordBox x:Name="passwordTextBox"
