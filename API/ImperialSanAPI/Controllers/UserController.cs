@@ -112,11 +112,11 @@ namespace ImperialSanAPI.Controllers
                         Status = StatusCodes.Status401Unauthorized,
                         Errors = new Dictionary<string, string[]>()
                         {
-                               { "Mail", ["Такой email уже занят"]}
+                               { "Email", ["Такой email уже занят"]}
                         },
                     };
 
-                    return Conflict("Email уже занят");
+                    return Conflict(registerError);
                 }
 
                 int user_id = context.Users.ToList().Count();
