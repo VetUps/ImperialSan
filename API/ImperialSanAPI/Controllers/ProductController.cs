@@ -15,7 +15,7 @@ namespace ImperialSanAPI.Controllers
     {
         // Получение всех товаров
         [HttpGet]
-        public ActionResult<List<CatalogProductDTO>> GetProducts(int pageNumber, int pageSize)
+        public ActionResult<CatalogProductPaginationDTO> GetProducts(int pageNumber, int pageSize)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
@@ -39,7 +39,17 @@ namespace ImperialSanAPI.Controllers
                                                 .Take(pageSize)
                                                 .ToList();
 
-                return Ok(products);
+                int totalCount = context.Products.Count();
+
+                CatalogProductPaginationDTO catalogProductPagination = new CatalogProductPaginationDTO
+                {
+                    Products = products,
+                    TotalProductsCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+                return Ok(catalogProductPagination);
             }
         }
 
