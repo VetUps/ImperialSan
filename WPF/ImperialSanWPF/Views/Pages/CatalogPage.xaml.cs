@@ -27,6 +27,7 @@ namespace ImperialSanWPF.Views.Pages
     {
         private int _pageSize = 9;
         private int _pageNumber = 1;
+        private int _maxPageNumber = 0;
         private Product[] currentProducts;
 
         public CatalogPage()
@@ -52,6 +53,19 @@ namespace ImperialSanWPF.Views.Pages
         {
             ProductControl productControl = new ProductControl(product);
             productsListView.Items.Add(productControl);
+        }
+
+        private void previousPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_pageNumber == 1)
+                return;
+
+            _pageNumber--;
+        }
+
+        private void nextPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if ()
         }
     }
 }

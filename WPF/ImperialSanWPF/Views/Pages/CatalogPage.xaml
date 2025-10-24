@@ -9,8 +9,23 @@
       Title="Каталог" Background="White">
 
     <Grid>
-        <ListView x:Name="productsListView">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200*"/>
+            <RowDefinition Height="30*"/>
+        </Grid.RowDefinitions>
+        
+        <ListView x:Name="productsListView" 
+                  Grid.Row="0"/>
+
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
             
-        </ListView>
+            <Button x:Name="previousPageButton"
+                    Click="previousPageButton_Click"/>
+            
+            <Button x:Name="nextPageButton"
+                    Click="nextPageButton_Click"/>
+        </StackPanel>
     </Grid>
 </Page>
