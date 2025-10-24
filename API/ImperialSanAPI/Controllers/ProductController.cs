@@ -1,4 +1,5 @@
-﻿using ImperialSanAPI.DTOs.ProductDTO;
+﻿using System.Numerics;
+using ImperialSanAPI.DTOs.ProductDTO;
 using ImperialSanAPI.Models;
 using ImperialSanAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace ImperialSanAPI.Controllers
     {
         // Получение всех товаров
         [HttpGet]
-        public ActionResult<List<CatalogProductDTO>> GetProducts()
+        public ActionResult<List<CatalogProductDTO>> GetProducts(int pageNumber, int pageSize)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
@@ -33,6 +34,9 @@ namespace ImperialSanAPI.Controllers
                                                     CategoryName = p.Category.CategoryTitle,
                                                     ParentCategoryId = p.Category.ParenCategoryId
                                                 })
+                                                .OrderBy(p => p.ProductId)
+                                                .Skip((pageNumber - 1) * pageSize)
+                                                .Take(pageSize)
                                                 .ToList();
 
                 return Ok(products);
