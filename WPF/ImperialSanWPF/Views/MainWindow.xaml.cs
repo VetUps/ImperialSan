@@ -58,7 +58,7 @@ namespace ImperialSanWPF
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
             SetLoginState(false);
-            //mainFrame.Navigate(new CatalogPage());
+            mainFrame.Navigate(new CatalogPage());
         }
 
         private void profileButton_Click(object sender, RoutedEventArgs e)
@@ -69,6 +69,11 @@ namespace ImperialSanWPF
         private void basketButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void catalogButton_Click(object sender, RoutedEventArgs e)
+        {
+            mainFrame.Navigate(new CatalogPage());
         }
     }
 }

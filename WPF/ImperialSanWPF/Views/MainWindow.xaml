@@ -41,7 +41,9 @@
                         Orientation="Horizontal" 
                         VerticalAlignment="Center" 
                         HorizontalAlignment="Left">
-                <Button Content="Каталог товаров" 
+                <Button x:Name="catalogButton"
+                        Click="catalogButton_Click"
+                        Content="Каталог товаров" 
                         FontSize="24" 
                         Height="40" 
                         Background="Transparent" 

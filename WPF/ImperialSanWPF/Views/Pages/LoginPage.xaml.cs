@@ -40,7 +40,7 @@ namespace ImperialSanWPF.Views.Pages
         private void OnLoginSuccess()
         {
             _mainWindow.SetLoginState(true);
-            //NavigationService.Navigate(new CatalogPage());
+            NavigationService.Navigate(new CatalogPage());
         }
 
         private async void loginButton_Click(object sender, RoutedEventArgs e)
