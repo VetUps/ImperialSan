@@ -4,39 +4,59 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
+      xmlns:conv="clr-namespace:ImperialSanWPF.Utils"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Каталог" Background="White">
 
-    <Grid>
+    <Page.Resources>
+        <conv:CurrentPageBackgroundConverter x:Key="CurrentPageBackgroundConverter"/>
+        <conv:CurrentPageFontWeightConverter x:Key="CurrentPageFontWeightConverter"/>
+    </Page.Resources>
+    
+    <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="200*"/>
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
         
         <ListView x:Name="productsListView" 
-                  Grid.Row="0"/>
+                  Grid.Row="0"
+                  ItemsSource="{Binding CurrentProductsControls}"/>
 
-        <StackPanel Grid.Row="1" 
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-            
-            <Button x:Name="previousPageButton"
-                    Click="previousPageButton_Click"
-                    Content="Назад"/>
-            
-            <Button x:Name="nextPageButton"
-                    Click="nextPageButton_Click"
-                    Content="Вперёд"/>
-
-            <TextBlock>
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0}/{1}">
-                        <Binding Path="PageNumber" />
-                        <Binding Path="MaxPageNumber" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </StackPanel>
+        <ItemsControl Grid.Row="1" 
+              ItemsSource="{Binding PaginationItems}"
+              HorizontalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding DisplayText}"
+                            Margin="2"
+                            Padding="6,2"
+                            Click="PageButton_Click"
+                            Tag="{Binding PageNumber}"
+                            Background="{Binding IsCurrent, Converter={StaticResource CurrentPageBackgroundConverter}}"
+                            FontWeight="{Binding IsCurrent, Converter={StaticResource CurrentPageFontWeightConverter}}"
+                            BorderBrush="Gray"
+                            BorderThickness="1">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEllipsis}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </Page>
