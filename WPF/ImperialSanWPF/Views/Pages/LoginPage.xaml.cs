@@ -32,11 +32,6 @@ namespace ImperialSanWPF.Views.Pages
             _mainWindow = mainWindow;
         }
 
-        private static HttpClient httpClient = new()
-        {
-            BaseAddress = new Uri("http://localhost:5020/api/"),
-        };
-
         private void OnLoginSuccess()
         {
             _mainWindow.SetLoginState(true);
@@ -53,7 +48,7 @@ namespace ImperialSanWPF.Views.Pages
                     password = passwordTextBox.Password,
                 };
 
-                using HttpResponseMessage response = await httpClient.PostAsJsonAsync("User/login", loginModel);
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.PostAsJsonAsync("User/login", loginModel);
 
                 if (response.IsSuccessStatusCode)
                 {

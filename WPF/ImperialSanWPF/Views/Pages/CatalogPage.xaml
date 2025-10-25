@@ -22,10 +22,21 @@
                     HorizontalAlignment="Center">
             
             <Button x:Name="previousPageButton"
-                    Click="previousPageButton_Click"/>
+                    Click="previousPageButton_Click"
+                    Content="Назад"/>
             
             <Button x:Name="nextPageButton"
-                    Click="nextPageButton_Click"/>
+                    Click="nextPageButton_Click"
+                    Content="Вперёд"/>
+
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}/{1}">
+                        <Binding Path="PageNumber" />
+                        <Binding Path="MaxPageNumber" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
         </StackPanel>
     </Grid>
 </Page>
