@@ -19,6 +19,36 @@ namespace ImperialSanAPI.Controllers
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
+                if (pageNumber <=0)
+                {
+                    UsualProblemDetails paginationError = new()
+                    {
+                        Title = "Ошибка пагинации",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "PageNumber", ["Такой страницы не существует"]}
+                        },
+                    };
+
+                    return NotFound(paginationError);
+                }
+
+                if (pageSize <=0)
+                {
+                    UsualProblemDetails paginationError = new()
+                    {
+                        Title = "Ошибка пагинации",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "PageSize", ["Размер страницы недопустим"]}
+                        },
+                    };
+
+                    return NotFound(paginationError);
+                }
+
                 var products = context.Products.Select(p => new CatalogProductDTO
                                                 {
                                                     ProductId = p.ProductId,
