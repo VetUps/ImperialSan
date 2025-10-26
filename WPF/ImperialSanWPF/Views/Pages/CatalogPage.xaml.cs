@@ -37,6 +37,7 @@ namespace ImperialSanWPF.Views.Pages
         private ObservableCollection<Product> _currentProducts;
         private ObservableCollection<ProductControl> _currentProductsControls;
         private ObservableCollection<PaginationItem> _paginationItems;
+        private ObservableCollection<Category> _availableCategories;
         #endregion
 
         #region Свойства
@@ -113,6 +114,19 @@ namespace ImperialSanWPF.Views.Pages
                 }
             }
         }
+        public ObservableCollection<Category> AvailableCategories
+        {
+            get => _availableCategories;
+
+            set
+            {
+                if (value != _availableCategories)
+                {
+                    _availableCategories = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Реализация интерфейса INotifyPropertyChanged
@@ -149,6 +163,16 @@ namespace ImperialSanWPF.Views.Pages
 
                 InitializeProducts(CurrentProducts);
             }
+        }
+
+        private async void UpdateCategories()
+        {
+            // Обновление категорий
+        }
+
+        private async void CategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            return;
         }
 
         private void UpdatePaginationItems()
@@ -249,28 +273,6 @@ namespace ImperialSanWPF.Views.Pages
 
                 UpdateCatalog();
             }
-        }
-
-        public class CurrentPageBackgroundConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                return (bool)value ? Brushes.LightBlue : Brushes.Transparent;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-                => throw new NotImplementedException();
-        }
-
-        public class CurrentPageFontWeightConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                return (bool)value ? FontWeights.Bold : FontWeights.Normal;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-                => throw new NotImplementedException();
         }
     }
 }

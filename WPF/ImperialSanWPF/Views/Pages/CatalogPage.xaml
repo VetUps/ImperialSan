@@ -16,13 +16,20 @@
     
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
             <RowDefinition Height="200*"/>
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
-        
-        
 
         <ItemsControl Grid.Row="0"
+                      ItemsSource="{Binding AvailableCategories}"
+                      HorizontalAlignment="Left">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ItemsControl>
+
+        <ItemsControl Grid.Row="1"
                       ItemsSource="{Binding CurrentProductsControls}"
                       HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
@@ -30,9 +37,19 @@
                     <UniformGrid Columns="3"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding CategoryTitle}"
+                            Margin="5"
+                            Padding="5, 10, 5, 10"
+                            BorderThickness="0"
+                            Foreground="#FE5B00"
+                            FontSize="18"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <ItemsControl Grid.Row="1" 
+        <ItemsControl Grid.Row="2" 
                       ItemsSource="{Binding PaginationItems}"
                       HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
