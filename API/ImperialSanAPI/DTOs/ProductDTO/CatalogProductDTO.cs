@@ -6,7 +6,7 @@ namespace ImperialSanAPI.DTOs.ProductDTO
     {
         public int ProductId { get; set; }
 
-        public string ProductTitle { get; set; } = null!;
+        public string? ProductTitle { get; set; }
 
         public string? ProductDescription { get; set; }
 

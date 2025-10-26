@@ -1,9 +1,10 @@
-﻿using System.Numerics;
-using ImperialSanAPI.DTOs.ProductDTO;
+﻿using ImperialSanAPI.DTOs.ProductDTO;
 using ImperialSanAPI.Models;
 using ImperialSanAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Numerics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,7 +16,7 @@ namespace ImperialSanAPI.Controllers
     {
         // Получение всех товаров
         [HttpGet]
-        public ActionResult<CatalogProductPaginationDTO> GetProducts(int pageNumber, int pageSize)
+        public ActionResult<CatalogProductPaginationDTO> GetProducts(int pageNumber, int pageSize, int? categoryId = null)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
@@ -49,7 +50,21 @@ namespace ImperialSanAPI.Controllers
                     return NotFound(paginationError);
                 }
 
-                var products = context.Products.Select(p => new CatalogProductDTO
+                var products = context.Products.Include(p => p.Category).ToList();
+
+                if (categoryId != null)
+                {
+                    Category categoty = context.Categories.Include(c => c.InverseParenCategory).First(c => c.CategoryId == categoryId);
+
+                    var categoryIds = GetAllCategoryIdsIncludingChildren(categoty.CategoryId, context);
+
+                    products = products.Where(p => categoryIds.Contains((int)p.CategoryId))
+                                       .ToList();
+                }
+
+                int totalCount = products.Count();
+
+                var resultProducts = products.Select(p => new CatalogProductDTO
                                                 {
                                                     ProductId = p.ProductId,
                                                     ProductTitle = p.ProductTitle,
@@ -69,17 +84,45 @@ namespace ImperialSanAPI.Controllers
                                                 .Take(pageSize)
                                                 .ToList();
 
-                int totalCount = context.Products.Count();
-
                 CatalogProductPaginationDTO catalogProductPagination = new CatalogProductPaginationDTO
                 {
-                    Products = products,
+                    Products = resultProducts,
                     TotalProductsCount = totalCount,
                     PageNumber = pageNumber,
                     PageSize = pageSize
                 };
 
                 return Ok(catalogProductPagination);
+            }
+        }
+
+        private List<int> GetAllCategoryIdsIncludingChildren(int rootCategoryId, ImperialSanContext context)
+        {
+            // Загружаем ВСЕ категории один раз
+            var allCategories = context.Categories.ToList();
+
+            // Строим словарь: ParentId -> список детей
+            var childrenMap = allCategories
+                .Where(c => c.ParenCategoryId.HasValue)
+                .GroupBy(c => c.ParenCategoryId.Value)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            // Рекурсивно собираем ID (уже в памяти!)
+            var result = new List<int>();
+            CollectCategoryIdsRecursive(rootCategoryId, childrenMap, result);
+            return result;
+        }
+
+        private void CollectCategoryIdsRecursive(int categoryId, Dictionary<int, List<Category>> childrenMap, List<int> result)
+        {
+            result.Add(categoryId);
+
+            if (childrenMap.TryGetValue(categoryId, out var children))
+            {
+                foreach (var child in children)
+                {
+                    CollectCategoryIdsRecursive(child.CategoryId, childrenMap, result);
+                }
             }
         }
 
