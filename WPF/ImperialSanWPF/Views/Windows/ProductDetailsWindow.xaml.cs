@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImperialSanWPF.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,17 +11,14 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ImperialSanWPF.Models;
-using ImperialSanWPF.Views.Windows;
 
-namespace ImperialSanWPF.Views.Controllers
+namespace ImperialSanWPF.Views.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для ProductControl.xaml
+    /// Логика взаимодействия для ProductDetailsWindow.xaml
     /// </summary>
-    public partial class ProductControl : UserControl
+    public partial class ProductDetailsWindow : Window
     {
         private Product _mainProduct { get; set; }
 
@@ -30,21 +28,16 @@ namespace ImperialSanWPF.Views.Controllers
 
             set
             {
-                if (value != _mainProduct) 
+                if (value != _mainProduct)
                     _mainProduct = value;
             }
         }
 
-        public ProductControl(Product product)
+        public ProductDetailsWindow(Product product)
         {
             InitializeComponent();
             MainProduct = product;
             DataContext = MainProduct;
-        }
-
-        private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            new ProductDetailsWindow(MainProduct).ShowDialog();
         }
     }
 }

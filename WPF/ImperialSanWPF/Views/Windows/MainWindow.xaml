@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImperialSanWPF"
         mc:Ignorable="d"
-        Title="Imperial San" Height="1080" Width="1920" WindowState="Maximized">
+        Title="Imperial San" 
+        Icon="/Resources/Images/logo.png"
+        Height="1080" 
+        Width="1920" 
+        WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

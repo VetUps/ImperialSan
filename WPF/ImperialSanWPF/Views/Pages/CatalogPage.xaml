@@ -20,13 +20,21 @@
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
         
-        <ListView x:Name="productsListView" 
-                  Grid.Row="0"
-                  ItemsSource="{Binding CurrentProductsControls}"/>
+        
+
+        <ItemsControl Grid.Row="0"
+                      ItemsSource="{Binding CurrentProductsControls}"
+                      HorizontalAlignment="Center">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
 
         <ItemsControl Grid.Row="1" 
-              ItemsSource="{Binding PaginationItems}"
-              HorizontalAlignment="Center">
+                      ItemsSource="{Binding PaginationItems}"
+                      HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -36,20 +44,26 @@
                 <DataTemplate>
                     <Button Content="{Binding DisplayText}"
                             Margin="2"
-                            Padding="6,2"
+                            Width="50"
+                            Height="50"
                             Click="PageButton_Click"
                             Tag="{Binding PageNumber}"
-                            Background="{Binding IsCurrent, Converter={StaticResource CurrentPageBackgroundConverter}}"
-                            FontWeight="{Binding IsCurrent, Converter={StaticResource CurrentPageFontWeightConverter}}"
                             BorderBrush="Gray"
                             BorderThickness="1">
                         <Button.Style>
                             <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="FontWeight" Value="Normal"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsEllipsis}" Value="True">
                                         <Setter Property="IsEnabled" Value="False"/>
                                         <Setter Property="Background" Value="Transparent"/>
                                         <Setter Property="BorderThickness" Value="0"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                        <Setter Property="Background" Value="LightBlue"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

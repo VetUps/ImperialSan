@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImperialSanWPF.Views.Controllers"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="250">
+             d:DesignHeight="350" d:DesignWidth="250" Margin="5" MouseLeftButtonDown="UserControl_MouseLeftButtonDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,6 +25,7 @@
                    TextTrimming="CharacterEllipsis"
                    MaxWidth="250"
                    MaxHeight="66"
+                   TextWrapping="Wrap"
                    Margin="0, 10, 0, 10"/>
 
         <TextBlock x:Name="productPrice"

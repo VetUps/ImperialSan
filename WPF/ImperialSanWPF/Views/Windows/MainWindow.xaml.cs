@@ -22,6 +22,7 @@ namespace ImperialSanWPF
         public MainWindow()
         {
             InitializeComponent();
+            mainFrame.Navigate(new CatalogPage());
             UpdateHeaderState();
         }
 
