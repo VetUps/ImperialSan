@@ -34,8 +34,8 @@ namespace ImperialSanWPF.Views.Pages
         private int _pageSize = 9;
         private int _pageNumber = 1;
         private int _maxPageNumber = 0;
+        private int? _currentCategoryId = null;
         private ObservableCollection<Product> _currentProducts;
-        private ObservableCollection<ProductControl> _currentProductsControls;
         private ObservableCollection<PaginationItem> _paginationItems;
         private ObservableCollection<Category> _availableCategories;
         #endregion
@@ -74,6 +74,20 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
 
+        public int? CurrentCategoryId
+        {
+            get => _currentCategoryId;
+
+            set
+            {
+                if (_currentCategoryId != value)
+                {
+                    _currentCategoryId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ObservableCollection<Product> CurrentProducts
         {
             get => _currentProducts;
@@ -83,19 +97,6 @@ namespace ImperialSanWPF.Views.Pages
                 if (value != _currentProducts)
                 {
                     _currentProducts = value;
-                }
-            }
-        }
-
-        public ObservableCollection<ProductControl> CurrentProductsControls
-        {
-            get => _currentProductsControls;
-
-            set
-            {
-                if (value != _currentProductsControls)
-                {
-                    _currentProductsControls = value;
                     OnPropertyChanged();
                 }
             }
@@ -141,18 +142,26 @@ namespace ImperialSanWPF.Views.Pages
         public CatalogPage()
         {
             _currentProducts = new ObservableCollection<Product>();
-            _currentProductsControls = new ObservableCollection<ProductControl>();
             _paginationItems = new ObservableCollection<PaginationItem>();
+            _availableCategories = new ObservableCollection<Category>();
 
             InitializeComponent();
             DataContext = this;
 
             UpdateCatalog();
+
+            categoriesItemsContorl.Items.Clear();
+            UpdateCategories();
         }
 
         private async void UpdateCatalog()
         {
-            HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync($"Product?pageNumber={PageNumber}&pageSize={_pageSize}");
+            string url = $"Product?pageNumber={PageNumber}&pageSize={_pageSize}";
+
+            if (CurrentCategoryId != null)
+                url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategoryId}";
+
+            HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
             {
@@ -160,19 +169,37 @@ namespace ImperialSanWPF.Views.Pages
                 CurrentProducts = result.Products;
                 MaxPageNumber = (int)float.Ceiling((float)result.TotalProductsCount / (float)_pageSize);
                 UpdatePaginationItems();
-
-                InitializeProducts(CurrentProducts);
             }
         }
 
         private async void UpdateCategories()
         {
-            // Обновление категорий
+            string url = $"Category?categoryId={CurrentCategoryId}";
+
+            if (CurrentCategoryId == null)
+                url = "Category";
+
+            HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                List<Category> newCategories = await response.Content.ReadFromJsonAsync<List<Category>>();
+
+                AvailableCategories.Clear();
+                foreach (Category categoty in newCategories)
+                    AvailableCategories.Add(categoty);
+
+                PageNumber = 1;
+                UpdateCatalog();
+            }
         }
 
-        private async void CategoryButton_Click(object sender, RoutedEventArgs e)
+        private void CategoryButton_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            Button button = sender as Button;
+            CurrentCategoryId = (int)button.Tag;
+
+            UpdateCategories();
         }
 
         private void UpdatePaginationItems()
@@ -238,16 +265,6 @@ namespace ImperialSanWPF.Views.Pages
                 DisplayText = ">",
                 PageNumber = null
             });
-        }
-
-        private void InitializeProducts(ObservableCollection<Product> products)
-        {
-            CurrentProductsControls.Clear();
-            foreach (Product product in CurrentProducts)
-            {
-                ProductControl productControl = new ProductControl(product);
-                CurrentProductsControls.Add(productControl);
-            }
         }
 
         private async void PageButton_Click(object sender, RoutedEventArgs e)

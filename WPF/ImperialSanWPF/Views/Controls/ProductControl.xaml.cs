@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ImperialSanWPF.Models;
 using ImperialSanWPF.Views.Windows;
 
@@ -21,30 +9,18 @@ namespace ImperialSanWPF.Views.Controllers
     /// Логика взаимодействия для ProductControl.xaml
     /// </summary>
     public partial class ProductControl : UserControl
-    {
-        private Product _mainProduct { get; set; }
-
-        public Product MainProduct
-        {
-            get => _mainProduct;
-
-            set
-            {
-                if (value != _mainProduct) 
-                    _mainProduct = value;
-            }
-        }
-
-        public ProductControl(Product product)
+    { 
+        public ProductControl()
         {
             InitializeComponent();
-            MainProduct = product;
-            DataContext = MainProduct;
         }
 
         private void UserControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            new ProductDetailsWindow(MainProduct).ShowDialog();
+            if (DataContext is Product product)
+            {
+                new ProductDetailsWindow(product).ShowDialog();
+            }
         }
     }
 }

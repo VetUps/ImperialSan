@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
-      xmlns:conv="clr-namespace:ImperialSanWPF.Utils"
+      xmlns:conv="clr-namespace:ImperialSanWPF.Utils" xmlns:local1="clr-namespace:ImperialSanWPF.Views.Controllers"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Каталог" Background="White">
@@ -21,16 +21,33 @@
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
 
-        <ItemsControl Grid.Row="0"
+        <ItemsControl x:Name="categoriesItemsContorl"
+                      Grid.Row="0"
                       ItemsSource="{Binding AvailableCategories}"
                       HorizontalAlignment="Left">
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding CategoryTitle}"
+                            Tag="{Binding CategoryId}"
+                            Margin="5"
+                            Padding="5, 10, 5, 10"
+                            Height="50"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            Foreground="#FE5B00"
+                            FontSize="18"
+                            Click="CategoryButton_Click"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <ItemsControl Grid.Row="1"
-                      ItemsSource="{Binding CurrentProductsControls}"
+                      ItemsSource="{Binding CurrentProducts}"
                       HorizontalAlignment="Center">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -39,12 +56,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="{Binding CategoryTitle}"
-                            Margin="5"
-                            Padding="5, 10, 5, 10"
-                            BorderThickness="0"
-                            Foreground="#FE5B00"
-                            FontSize="18"/>
+                    <local1:ProductControl/> 
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
