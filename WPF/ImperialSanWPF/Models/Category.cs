@@ -8,7 +8,7 @@ namespace ImperialSanWPF.Models
 {
     public class Category
     {
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public string? CategoryTitle { get; set; }
     }
 }

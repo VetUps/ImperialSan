@@ -34,10 +34,11 @@ namespace ImperialSanWPF.Views.Pages
         private int _pageSize = 9;
         private int _pageNumber = 1;
         private int _maxPageNumber = 0;
-        private int? _currentCategoryId = null;
+        private Category _currentCategory = new Category { CategoryId = null, CategoryTitle = "Все товары"};
         private ObservableCollection<Product> _currentProducts;
         private ObservableCollection<PaginationItem> _paginationItems;
         private ObservableCollection<Category> _availableCategories;
+        private ObservableCollection<Category> _categoriesHistory;
         #endregion
 
         #region Свойства
@@ -74,15 +75,15 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
 
-        public int? CurrentCategoryId
+        public Category CurrentCategory
         {
-            get => _currentCategoryId;
+            get => _currentCategory;
 
             set
             {
-                if (_currentCategoryId != value)
+                if (_currentCategory != value)
                 {
-                    _currentCategoryId = value;
+                    _currentCategory = value;
                     OnPropertyChanged();
                 }
             }
@@ -128,6 +129,20 @@ namespace ImperialSanWPF.Views.Pages
                 }
             }
         }
+
+        public ObservableCollection<Category> CategoriesHistory
+        {
+            get => _categoriesHistory;
+
+            set
+            {
+                if (value != _categoriesHistory)
+                {
+                    _categoriesHistory = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Реализация интерфейса INotifyPropertyChanged
@@ -144,62 +159,135 @@ namespace ImperialSanWPF.Views.Pages
             _currentProducts = new ObservableCollection<Product>();
             _paginationItems = new ObservableCollection<PaginationItem>();
             _availableCategories = new ObservableCollection<Category>();
+            _categoriesHistory = new ObservableCollection<Category>() { new Category {
+                CategoryId = CurrentCategory.CategoryId,
+                CategoryTitle = CurrentCategory.CategoryTitle,
+                } 
+            };
 
             InitializeComponent();
             DataContext = this;
 
-            UpdateCatalog();
-
-            categoriesItemsContorl.Items.Clear();
-            UpdateCategories();
+            Loaded += CatalogPage_Loaded;
         }
 
-        private async void UpdateCatalog()
+        #region Методы страницы
+        private async void CatalogPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= CatalogPage_Loaded;
+
+            await UpdateCategories();
+            await UpdateCatalog();
+        }
+
+        private async Task UpdateCatalog()
         {
             string url = $"Product?pageNumber={PageNumber}&pageSize={_pageSize}";
 
-            if (CurrentCategoryId != null)
-                url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategoryId}";
+            if (CurrentCategory.CategoryId != null)
+                url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategory.CategoryId}";
 
-            HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                PaginationProduct result = await response.Content.ReadFromJsonAsync<PaginationProduct>();
-                CurrentProducts = result.Products;
-                MaxPageNumber = (int)float.Ceiling((float)result.TotalProductsCount / (float)_pageSize);
-                UpdatePaginationItems();
+                HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    PaginationProduct result = await response.Content.ReadFromJsonAsync<PaginationProduct>();
+                    CurrentProducts = result.Products;
+                    MaxPageNumber = (int)float.Ceiling((float)result.TotalProductsCount / (float)_pageSize);
+                    UpdatePaginationItems();
+                }
+                else
+                {
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+
+                    if (errorResponse.Errors != null)
+                    {
+                        List<string> errorMessages = new List<string>();
+
+                        foreach (var error in errorResponse.Errors)
+                            errorMessages.Add(error.Value[0]);
+
+                        MessageBox.Show(errorMessages[0]);
+                    }
+
+                    else
+                    {
+                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
         }
 
-        private async void UpdateCategories()
+        private async Task UpdateCategories()
         {
-            string url = $"Category?categoryId={CurrentCategoryId}";
+            string url = $"Category?categoryId={CurrentCategory.CategoryId}";
 
-            if (CurrentCategoryId == null)
+            if (CurrentCategory.CategoryId == null)
                 url = "Category";
 
-            HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                List<Category> newCategories = await response.Content.ReadFromJsonAsync<List<Category>>();
+                HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync(url);
 
-                AvailableCategories.Clear();
-                foreach (Category categoty in newCategories)
-                    AvailableCategories.Add(categoty);
+                if (response.IsSuccessStatusCode)
+                {
+                    List<Category> newCategories = await response.Content.ReadFromJsonAsync<List<Category>>();
 
-                PageNumber = 1;
-                UpdateCatalog();
+                    AvailableCategories.Clear();
+                    foreach (Category categoty in newCategories)
+                        AvailableCategories.Add(categoty);
+
+                    PageNumber = 1;
+                    await UpdateCatalog();
+                }
+                else
+                {
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+
+                    if (errorResponse.Errors != null)
+                    {
+                        List<string> errorMessages = new List<string>();
+
+                        foreach (var error in errorResponse.Errors)
+                            errorMessages.Add(error.Value[0]);
+
+                        MessageBox.Show(errorMessages[0]);
+                    }
+
+                    else
+                    {
+                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
         }
 
-        private void CategoryButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateCategoriesHistory()
         {
-            Button button = sender as Button;
-            CurrentCategoryId = (int)button.Tag;
+            int currentCategoryHistoryIndex = CategoriesHistory.ToList().FindIndex(c => c.CategoryId == CurrentCategory.CategoryId);
 
-            UpdateCategories();
+            if (currentCategoryHistoryIndex != -1)
+            {
+                CategoriesHistory = new ObservableCollection<Category>(CategoriesHistory.Take(currentCategoryHistoryIndex + 1).ToList());
+            }
+            else
+            {
+                CategoriesHistory.Add(new Category
+                {
+                    CategoryId = CurrentCategory.CategoryId,
+                    CategoryTitle = CurrentCategory.CategoryTitle,
+                });
+            }
         }
 
         private void UpdatePaginationItems()
@@ -267,6 +355,26 @@ namespace ImperialSanWPF.Views.Pages
             });
         }
 
+        private async void CategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            CurrentCategory.CategoryId = (int)button.CommandParameter;
+            CurrentCategory.CategoryTitle = (string?)button.Content;
+
+            await UpdateCategories();
+            UpdateCategoriesHistory();
+        }
+
+        private async void CategoryHistoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            CurrentCategory.CategoryId = button.CommandParameter == null ? null:(int)button.CommandParameter;
+            CurrentCategory.CategoryTitle= (string?)button.Content;
+
+            await UpdateCategories();
+            UpdateCategoriesHistory();
+        }
+
         private async void PageButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button)
@@ -288,8 +396,9 @@ namespace ImperialSanWPF.Views.Pages
                     return;
                 }
 
-                UpdateCatalog();
+                await UpdateCatalog();
             }
         }
+        #endregion
     }
 }
