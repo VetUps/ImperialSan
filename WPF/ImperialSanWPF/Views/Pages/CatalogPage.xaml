@@ -86,20 +86,18 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
+        <ComboBox x:Name="sortComboBox"/>
+
         <Grid Grid.Row="2"
-              Grid.Column="1">
+              Grid.Column="1"
+              ShowGridLines="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="300*"/>
                 <RowDefinition Height="45*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150*"/>
-                <ColumnDefinition Width="500*"/>
-            </Grid.ColumnDefinitions>
-            
+
             <ItemsControl x:Name="currnetProudctsItemsControl"
                           Grid.Row="0"
-                          Grid.Column="1"
                           ItemsSource="{Binding CurrentProducts}"
                           Visibility="{Binding CurrentProducts, 
                                        Converter={StaticResource EmptyCatalogVisivilityConverter}}"
@@ -118,7 +116,6 @@
 
             <ItemsControl x:Name="paginationItemsItemsControl" 
                           Grid.Row="1"
-                          Grid.Column="1"
                           ItemsSource="{Binding PaginationItems}"
                           HorizontalAlignment="Center">
                 <ItemsControl.ItemsPanel>
@@ -161,7 +158,6 @@
 
             <TextBlock x:Name="emptyProudctsTextBlock" 
                        Grid.Row="0"
-                       Grid.Column="1"
                        Visibility="{Binding CurrentProducts, 
                                     Converter={StaticResource EmptyCatalogVisivilityConverter},
                                     ConverterParameter=Invert}"
