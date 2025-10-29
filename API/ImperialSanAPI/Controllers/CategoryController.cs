@@ -48,17 +48,15 @@ namespace ImperialSanAPI.Controllers
                     return Ok(categories);
                 }
 
-                UsualProblemDetails categoryError = new()
+                return NotFound(new UsualProblemDetails
                 {
                     Title = "Ошибка получения категории",
                     Status = StatusCodes.Status404NotFound,
                     Errors = new Dictionary<string, string[]>()
-                        {
-                               { "Category", ["Такой категории не существует"]}
-                        },
-                };
-
-                return NotFound(categoryError);
+                    {
+                        { "Category", ["Такой категории не существует"]}
+                    },
+                });
             }
         }
     }

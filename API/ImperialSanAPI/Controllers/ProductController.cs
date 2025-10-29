@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Numerics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,13 +17,55 @@ namespace ImperialSanAPI.Controllers
     {
         // Получение всех товаров
         [HttpGet]
-        public ActionResult<CatalogProductPaginationDTO> GetProducts(int pageNumber, int pageSize, int? categoryId = null)
+        public ActionResult<CatalogProductPaginationDTO> GetProducts(
+            int pageNumber, 
+            int pageSize, 
+            int? categoryId = null,
+            string? sortBy = null,
+            string? sortOrder = "asc")
         {
+
+            var validSortFields = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "price", "name", "date", "title"
+            };
+
+            var validSortOrders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "asc", "desc"
+            };
+
+            if (!string.IsNullOrEmpty(sortBy) && !validSortFields.Contains(sortBy))
+            {
+                return BadRequest(new UsualProblemDetails
+                {
+                    Title = "Ошибка сортировки",
+                    Status = StatusCodes.Status400BadRequest,
+                    Errors = new Dictionary<string, string[]>
+                    {
+                        { "SortBy",  ["Недопустимое поле для сортировки"] }
+                    }
+                });
+            }
+
+            if (!string.IsNullOrEmpty(sortOrder) && !validSortOrders.Contains(sortOrder))
+            {
+                return BadRequest(new UsualProblemDetails
+                {
+                    Title = "Ошибка сортировки",
+                    Status = StatusCodes.Status400BadRequest,
+                    Errors = new Dictionary<string, string[]>
+                    {
+                        { "SortOrder", ["Направление сортировки должно быть 'asc' или 'desc'"] }
+                    }
+                });
+            }
+
             using (ImperialSanContext context = new ImperialSanContext())
             {
                 if (pageNumber <=0)
                 {
-                    UsualProblemDetails paginationError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка пагинации",
                         Status = StatusCodes.Status404NotFound,
@@ -30,14 +73,12 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "PageNumber", ["Такой страницы не существует"]}
                         },
-                    };
-
-                    return NotFound(paginationError);
+                    });
                 }
 
                 if (pageSize <=0)
                 {
-                    UsualProblemDetails paginationError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка пагинации",
                         Status = StatusCodes.Status404NotFound,
@@ -45,9 +86,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "PageSize", ["Размер страницы недопустим"]}
                         },
-                    };
-
-                    return NotFound(paginationError);
+                    });
                 }
 
                 var products = context.Products.Include(p => p.Category).ToList();
@@ -55,16 +94,34 @@ namespace ImperialSanAPI.Controllers
                 if (categoryId != null)
                 {
                     Category categoty = context.Categories.Include(c => c.InverseParenCategory).First(c => c.CategoryId == categoryId);
-
                     var categoryIds = GetAllCategoryIdsIncludingChildren(categoty.CategoryId, context);
 
                     products = products.Where(p => categoryIds.Contains((int)p.CategoryId))
                                        .ToList();
                 }
 
-                int totalCount = products.Count();
+                var query = products.AsQueryable();
 
-                var resultProducts = products.Select(p => new CatalogProductDTO
+                if (!string.IsNullOrEmpty(sortBy))
+                {
+                    query = sortBy.ToLowerInvariant() switch
+                    {
+                        "price" => sortOrder?.ToLowerInvariant() == "desc" ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+
+                        "name" or "title" => sortOrder?.ToLowerInvariant() == "desc" ? query.OrderByDescending(p => p.ProductTitle) : query.OrderBy(p => p.ProductTitle),
+
+                        "date" => sortOrder?.ToLowerInvariant() == "desc" ? query.OrderByDescending(p => p.DateOfCreate) : query.OrderBy(p => p.DateOfCreate),
+                        
+                        _ => query.OrderBy(p => p.ProductId)
+                    };
+                }
+                else
+                {
+                    query = query.OrderBy(p => p.ProductId);
+                }
+
+                int totalCount = products.Count();
+                var resultProducts = query.Select(p => new CatalogProductDTO
                                                 {
                                                     ProductId = p.ProductId,
                                                     ProductTitle = p.ProductTitle,
@@ -79,7 +136,6 @@ namespace ImperialSanAPI.Controllers
                                                     CategoryName = p.Category.CategoryTitle,
                                                     ParentCategoryId = p.Category.ParenCategoryId
                                                 })
-                                                .OrderBy(p => p.ProductId)
                                                 .Skip((pageNumber - 1) * pageSize)
                                                 .Take(pageSize)
                                                 .ToList();
@@ -138,7 +194,7 @@ namespace ImperialSanAPI.Controllers
 
                 if (product == null)
                 {
-                    UsualProblemDetails productError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения товара",
                         Status = StatusCodes.Status404NotFound,
@@ -146,9 +202,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Такого товара не существует"]}
                         },
-                    };
-
-                    return NotFound(productError);
+                    });
                 }
 
                 CatalogProductDTO productDTO = new CatalogProductDTO
@@ -179,7 +233,7 @@ namespace ImperialSanAPI.Controllers
             {
                 if (context.Products.Where(p => p.BrandTitle == addProductDto.BrandTitle).Any(u => u.ProductTitle == addProductDto.ProductTitle))
                 {
-                    UsualProblemDetails productError = new()
+                    return Conflict(new UsualProblemDetails
                     {
                         Title = "Ошибка получения товара",
                         Status = StatusCodes.Status409Conflict,
@@ -187,14 +241,12 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Товар с таким названием у этого бренда уже есть"]}
                         },
-                    };
-
-                    return Conflict(productError);
+                    });
                 }
 
                 if (!context.Categories.Any(c => c.CategoryId ==  addProductDto.CategoryId))
                 {
-                    UsualProblemDetails productError = new()
+                    return Conflict(new UsualProblemDetails
                     {
                         Title = "Ошибка получения кагетории",
                         Status = StatusCodes.Status409Conflict,
@@ -202,9 +254,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Category", ["Такой категории не существует"]}
                         },
-                    };
-
-                    return Conflict(productError);
+                    });
                 }
 
                 var product = new Product
@@ -237,7 +287,7 @@ namespace ImperialSanAPI.Controllers
                 var product = context.Products.Find(updateProductDto.ProductId);
                 if (product == null)
                 {
-                    UsualProblemDetails productError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения товара",
                         Status = StatusCodes.Status404NotFound,
@@ -245,15 +295,13 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Такого товара не существует"]}
                         },
-                    };
-
-                    return NotFound(productError);
+                    });
                 }
 
                 if (context.Products.Where(p => p.BrandTitle == updateProductDto.BrandTitle && p.ProductId != updateProductDto.ProductId)
                                     .Any(u => u.ProductTitle == updateProductDto.ProductTitle))
                 {
-                    UsualProblemDetails productError = new()
+                    return Conflict(new UsualProblemDetails
                     {
                         Title = "Ошибка получения товара",
                         Status = StatusCodes.Status409Conflict,
@@ -261,14 +309,12 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Товар с таким названием у этого бренда уже есть"]}
                         },
-                    };
-
-                    return Conflict(productError);
+                    });
                 }
 
                 if (!context.Categories.Any(c => c.CategoryId == updateProductDto.CategoryId))
                 {
-                    UsualProblemDetails productError = new()
+                    return Conflict(new UsualProblemDetails
                     {
                         Title = "Ошибка получения кагетории",
                         Status = StatusCodes.Status409Conflict,
@@ -276,9 +322,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Category", ["Такой категории не существует"]}
                         },
-                    };
-
-                    return Conflict(productError);
+                    });
                 }
 
                 product.ProductTitle = updateProductDto.ProductTitle;
@@ -304,7 +348,7 @@ namespace ImperialSanAPI.Controllers
                 var product = context.Products.Find(deleteProductDto.ProductId);
                 if (product == null)
                 {
-                    UsualProblemDetails productError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения товара",
                         Status = StatusCodes.Status404NotFound,
@@ -312,9 +356,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Такого товара не существует"]}
                         },
-                    };
-
-                    return NotFound(productError);
+                    });
                 }
 
                 product.IsActive = false;

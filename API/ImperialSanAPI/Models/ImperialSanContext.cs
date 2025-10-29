@@ -187,6 +187,7 @@ public partial class ImperialSanContext : DbContext
                 .HasColumnName("date_of_create");
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
+                .HasDefaultValue("https://forums.ea.com/t5/s/tghpe58374/images/bS00ODUxNjExLTFpRUFCRDZCNEE4QTVBQjVEOQ?revision=1")
                 .HasColumnName("image_url");
             entity.Property(e => e.IsActive)
                 .IsRequired()

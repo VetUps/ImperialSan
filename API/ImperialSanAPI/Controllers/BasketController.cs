@@ -57,7 +57,7 @@ namespace ImperialSanAPI.Controllers
                 var product = context.Products.FirstOrDefault(p => p.ProductId == dto.ProductId);
                 if (product == null)
                 {
-                    UsualProblemDetails productError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения товара",
                         Status = StatusCodes.Status404NotFound,
@@ -65,9 +65,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Такого товара не существует"]}
                         },
-                    };
-
-                    return NotFound(productError);
+                    });
                 }
 
                 var basket = context.Baskets
@@ -129,7 +127,7 @@ namespace ImperialSanAPI.Controllers
 
                 if (position?.Basket?.UserId != userId)
                 {
-                    UsualProblemDetails productError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения позиции",
                         Status = StatusCodes.Status404NotFound,
@@ -137,9 +135,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Такой позиции не существует в корзине"]}
                         },
-                    };
-
-                    return NotFound(productError);
+                    });
                 }
 
                 position.ProductQuantity = updateBasketPositionDto.Quantity;
@@ -177,7 +173,7 @@ namespace ImperialSanAPI.Controllers
 
                 if (position?.Basket?.UserId != userId)
                 {
-                    UsualProblemDetails productError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка удаления товара",
                         Status = StatusCodes.Status401Unauthorized,
@@ -185,9 +181,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Product", ["Такого товара не существует в корзине"]}
                         },
-                    };
-
-                    return NotFound(productError);
+                    });
                 }
 
                 context.BasketPositions.Remove(position);

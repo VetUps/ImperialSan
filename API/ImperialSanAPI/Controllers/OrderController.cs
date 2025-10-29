@@ -64,7 +64,7 @@ namespace ImperialSanAPI.Controllers
 
                 if (basketToDelete == null || basketToDelete.BasketPositions.Count == 0)
                 {
-                    UsualProblemDetails orderError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения корзины",
                         Status = StatusCodes.Status404NotFound,
@@ -72,9 +72,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Basket", ["Коризна пуста"]}
                         },
-                    };
-
-                    return NotFound(orderError);
+                    });
                 }
 
                 using (var transaction = context.Database.BeginTransaction())
@@ -129,7 +127,7 @@ namespace ImperialSanAPI.Controllers
 
                     catch (Exception ex)
                     {
-                        UsualProblemDetails orderError = new()
+                        return BadRequest(new UsualProblemDetails
                         {
                             Title = "Ошибка формирования заказа",
                             Status = StatusCodes.Status500InternalServerError,
@@ -137,9 +135,7 @@ namespace ImperialSanAPI.Controllers
                             {
                                    { "Order", [$"Не удалось сформировать заказ: {ex.Message}"]}
                             },
-                        };
-
-                        return BadRequest(orderError);
+                        });
                     }
                 }
 
@@ -159,17 +155,15 @@ namespace ImperialSanAPI.Controllers
 
                 if (order == null)
                 {
-                    UsualProblemDetails orderError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения заказа",
                         Status = StatusCodes.Status404NotFound,
                         Errors = new Dictionary<string, string[]>()
-                            {
-                                   { "Order", ["Заказ не найден"]}
-                            },
-                    };
-
-                    return NotFound(orderError);
+                        {
+                            { "Order", ["Заказ не найден"]}
+                        },
+                    });
                 }
 
                 order.OrderStatus = updateOrderStatusDto.NewOrderStatus;
@@ -191,32 +185,28 @@ namespace ImperialSanAPI.Controllers
 
                 if (order == null)
                 {
-                    UsualProblemDetails orderError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения заказа",
                         Status = StatusCodes.Status404NotFound,
                         Errors = new Dictionary<string, string[]>()
-                            {
-                                   { "Order", ["Заказ не найден"]}
-                            },
-                    };
-
-                    return NotFound(orderError);
+                        {
+                            { "Order", ["Заказ не найден"]}
+                        },
+                    });
                 }
 
                 if (order.OrderStatus != "В обработке")
                 {
-                    UsualProblemDetails orderError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка отмены заказа",
                         Status = StatusCodes.Status404NotFound,
                         Errors = new Dictionary<string, string[]>()
-                            {
-                                   { "Order", [$"Заказ нельзя отменить, т.к. он уже в стадии \"{order.OrderStatus}\""]}
-                            },
-                    };
-
-                    return NotFound(orderError);
+                        {
+                            { "Order", [$"Заказ нельзя отменить, т.к. он уже в стадии \"{order.OrderStatus}\""]}
+                        },
+                    });
                 }
 
                 order.OrderStatus = "Отменён";

@@ -52,7 +52,7 @@ namespace ImperialSanAPI.Controllers
 
                 if (user == null)
                 {
-                    UsualProblemDetails userError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения пользователя",
                         Status = StatusCodes.Status404NotFound,
@@ -60,9 +60,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "User", ["Такого пользователя не существует"]}
                         },
-                    };
-
-                    return NotFound(userError);
+                    });
                 }
 
                 return Ok(user);
@@ -78,21 +76,27 @@ namespace ImperialSanAPI.Controllers
                 // Находим пользователя по email
                 var user = context.Users.FirstOrDefault(u => u.UserMail == loginUserDto.Email);
 
-                UsualProblemDetails loginError = new()
-                {
-                    Title = "Ошибка авторизации",
-                    Status = StatusCodes.Status401Unauthorized,
-                    Errors = new Dictionary<string, string[]>()
-                        {
-                               { "Login", ["Неверный email или пароль"]}
-                        },
-                };
-
                 if (user == null)
-                    return Unauthorized(loginError);
+                    return Unauthorized(new UsualProblemDetails
+                    {
+                        Title = "Ошибка авторизации",
+                        Status = StatusCodes.Status401Unauthorized,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                            { "Login", ["Неверный email или пароль"]}
+                        },
+                    });
 
                 if (!SecurityService.VerifyPassword(loginUserDto.Password, user.PasswordHash))
-                    return Unauthorized(loginError);
+                    return Unauthorized(new UsualProblemDetails
+                    {
+                        Title = "Ошибка авторизации",
+                        Status = StatusCodes.Status401Unauthorized,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                            { "Login", ["Неверный email или пароль"]}
+                        },
+                    });
 
                 return Ok(user.UserId);
             }
@@ -106,7 +110,7 @@ namespace ImperialSanAPI.Controllers
             {
                 if (context.Users.Any(u => u.UserMail == registerUserDto.Email))
                 {
-                    UsualProblemDetails registerError = new()
+                    return Conflict(new UsualProblemDetails
                     {
                         Title = "Ошибка регистрации",
                         Status = StatusCodes.Status401Unauthorized,
@@ -114,9 +118,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "Email", ["Такой email уже занят"]}
                         },
-                    };
-
-                    return Conflict(registerError);
+                    });
                 }
 
                 int user_id = context.Users.ToList().Count();
@@ -148,7 +150,7 @@ namespace ImperialSanAPI.Controllers
                 var user = context.Users.Find(updateUserDto.UserId);
                 if (user == null)
                 {
-                    UsualProblemDetails userError = new()
+                    return NotFound(new UsualProblemDetails
                     {
                         Title = "Ошибка получения пользователя",
                         Status = StatusCodes.Status404NotFound,
@@ -156,9 +158,7 @@ namespace ImperialSanAPI.Controllers
                         {
                                { "User", ["Такого пользователя не существует"]}
                         },
-                    };
-
-                    return NotFound(userError);
+                    });
                 }
 
                 user.UserSurname = updateUserDto.Surname;
