@@ -39,6 +39,9 @@ namespace ImperialSanWPF.Views.Pages
         private ObservableCollection<PaginationItem> _paginationItems;
         private ObservableCollection<Category> _availableCategories;
         private ObservableCollection<Category> _categoriesHistory;
+
+        private SortItem _currentSortItem;
+        private List<SortItem> _sortItems;
         #endregion
 
         #region Свойства
@@ -143,6 +146,31 @@ namespace ImperialSanWPF.Views.Pages
                 }
             }
         }
+
+        public List<SortItem> SortItems
+        {
+            get => _sortItems;
+
+            set
+            {
+                if (value != _sortItems)
+                    _sortItems = value;
+            }
+        }
+
+        public SortItem CurrentSortItem
+        {
+            get => _currentSortItem;
+
+            set
+            {
+                if (value != _currentSortItem)
+                {
+                    _currentSortItem = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Реализация интерфейса INotifyPropertyChanged
@@ -164,6 +192,7 @@ namespace ImperialSanWPF.Views.Pages
                 CategoryTitle = CurrentCategory.CategoryTitle,
                 } 
             };
+            _sortItems = AvailiableSortItems.sortItems;
 
             InitializeComponent();
             DataContext = this;
@@ -182,10 +211,7 @@ namespace ImperialSanWPF.Views.Pages
 
         private async Task UpdateCatalog()
         {
-            string url = $"Product?pageNumber={PageNumber}&pageSize={_pageSize}";
-
-            if (CurrentCategory.CategoryId != null)
-                url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategory.CategoryId}";
+            string url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategory.CategoryId}&sortBy={CurrentSortItem.SortText}&sortOrder={CurrentSortItem.SortOrder}";
 
             try
             {
@@ -227,9 +253,6 @@ namespace ImperialSanWPF.Views.Pages
         private async Task UpdateCategories()
         {
             string url = $"Category?categoryId={CurrentCategory.CategoryId}";
-
-            if (CurrentCategory.CategoryId == null)
-                url = "Category";
 
             try
             {
@@ -400,5 +423,13 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
         #endregion
+
+        private async void sortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SortItem sortItem = sortComboBox.SelectedItem as SortItem;
+            CurrentSortItem = sortItem;
+
+            UpdateCatalog();
+        }
     }
 }
