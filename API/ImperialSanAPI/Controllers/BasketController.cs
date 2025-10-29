@@ -26,7 +26,6 @@ namespace ImperialSanAPI.Controllers
                 if (basket == null)
                 {
                     basket = new Basket { 
-                        BasketId = context.Baskets.Count() + 1,
                         UserId = userId 
                     };
                     context.Baskets.Add(basket);
