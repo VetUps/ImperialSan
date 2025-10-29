@@ -5,31 +5,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImperialSanWPF.Views.Controllers"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="250" Margin="5" MouseLeftButtonDown="UserControl_MouseLeftButtonDown">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="66*"/>
-            <RowDefinition Height="20*"/>
-        </Grid.RowDefinitions>
-        
-        <Image x:Name="productImage"
-               Grid.Row="0"
-               Width="180" 
-               Height="188px"
-               Source="{Binding ImageUrl}"/>
+             d:DesignHeight="360" d:DesignWidth="260" MouseLeftButtonDown="UserControl_MouseLeftButtonDown">
+    <Border BorderBrush="#ECECEC" 
+            BorderThickness="1">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="66*"/>
+                <RowDefinition Height="20*"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock x:Name="productTitle"
-                   Grid.Row="1"
-                   Text="{Binding ProductTitle}"
-                   TextTrimming="CharacterEllipsis"
-                   MaxWidth="250"
-                   MaxHeight="66"
-                   TextWrapping="Wrap"
-                   Margin="0, 10, 0, 10"/>
+            <Image x:Name="productImage"
+                   Grid.Row="0"
+                   Width="180" 
+                   Height="188px"
+                   Source="{Binding ImageUrl}"/>
 
-        <TextBlock x:Name="productPrice"
-                   Text="{Binding Price, StringFormat={}{0} ₽}"
-                   Grid.Row="2"/>
-    </Grid>
+            <TextBlock x:Name="productTitle"
+                       Grid.Row="1"
+                       Text="{Binding ProductTitle}"
+                       FontSize="16"
+                       Foreground="#151716"
+                       TextTrimming="CharacterEllipsis"
+                       MaxWidth="250"
+                       MaxHeight="66"
+                       TextWrapping="Wrap"
+                       Margin="0, 10, 0, 10"/>
+
+            <TextBlock x:Name="productPrice"
+                       Text="{Binding Price, StringFormat={}{0} ₽}"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Foreground="#151716"
+                       Grid.Row="2"/>
+        </Grid>
+    </Border>
 </UserControl>
