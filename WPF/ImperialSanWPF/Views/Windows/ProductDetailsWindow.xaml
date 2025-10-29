@@ -110,6 +110,7 @@
                 <ColumnDefinition Width="170*"/>
                 <ColumnDefinition Width="65*"/>
                 <ColumnDefinition Width="205*"/>
+                <ColumnDefinition Width="5*"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="productPriceTextBlock"
@@ -123,6 +124,7 @@
 
             <Button x:Name="addToBasketButton"
                     Grid.Column="2"
+                    Click="addToBasketButton_Click"
                     Content="Добавить в корзину"/>
         </Grid>
     </Grid>

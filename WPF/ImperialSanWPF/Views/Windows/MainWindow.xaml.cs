@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImperialSanWPF.Utils;
 using ImperialSanWPF.Views.Pages;
 
 namespace ImperialSanWPF
@@ -24,6 +25,8 @@ namespace ImperialSanWPF
             InitializeComponent();
             mainFrame.Navigate(new CatalogPage());
             UpdateHeaderState();
+
+            MainWindowClass.mainWindow = this;
         }
 
         public void SetLoginState(bool isLoggedIn)
@@ -48,12 +51,12 @@ namespace ImperialSanWPF
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            mainFrame.Navigate(new LoginPage(this));
+            mainFrame.Navigate(new LoginPage());
         }
 
         private void registrationButton_Click(object sender, RoutedEventArgs e)
         {
-            mainFrame.Navigate(new RegistrationPage(this));
+            mainFrame.Navigate(new RegistrationPage());
         }
 
         private void logoutButton_Click(object sender, RoutedEventArgs e)

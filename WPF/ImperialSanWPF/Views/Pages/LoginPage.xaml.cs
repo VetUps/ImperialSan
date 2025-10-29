@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ImperialSanWPF.Models;
 using ImperialSanWPF.Utils;
 
 namespace ImperialSanWPF.Views.Pages
@@ -24,17 +25,14 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class LoginPage : Page
     {
-        private readonly MainWindow _mainWindow;
-
-        public LoginPage(MainWindow mainWindow)
+        public LoginPage()
         {
             InitializeComponent();
-            _mainWindow = mainWindow;
         }
 
         private void OnLoginSuccess()
         {
-            _mainWindow.SetLoginState(true);
+            MainWindowClass.mainWindow.SetLoginState(true);
             NavigationService.Navigate(new CatalogPage());
         }
 
@@ -55,6 +53,45 @@ namespace ImperialSanWPF.Views.Pages
                     var jsonResponse = await response.Content.ReadAsStringAsync();
                     SessionContext.UserId = Convert.ToInt32(jsonResponse);
                     OnLoginSuccess();
+
+                    LoadBasket();
+                }
+                else
+                {
+                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+
+                    if (errorResponse.Errors != null)
+                    {
+                        List<string> errorMessages = new List<string>();
+
+                        foreach (var error in errorResponse.Errors)
+                            errorMessages.Add(error.Value[0]);
+
+                        MessageBox.Show(errorMessages[0]);
+                    }
+
+                    else
+                    {
+                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
+            }
+        }
+
+        private async void LoadBasket()
+        {
+            try
+            {
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync($"Basket/{SessionContext.UserId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadFromJsonAsync<Basket>();
+                    SessionContext.UserBasket = jsonResponse;
                 }
                 else
                 {
@@ -84,7 +121,7 @@ namespace ImperialSanWPF.Views.Pages
 
         private void registartionButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new RegistrationPage(_mainWindow));
+            NavigationService.Navigate(new RegistrationPage());
         }
     }
 }
