@@ -1,0 +1,32 @@
+volumes:
+  my-datavolume:
+
+services:
+ db:
+  image: mysql
+  volumes:
+    - my-datavolume:/var/lib/mysql
+  ports:
+   - "3307:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: imperial_san
+  networks:
+      - my-network
+
+ api:
+  build:
+   context: ./API/ImperialSanAPI
+   dockerfile: Dockerfile
+  depends_on:
+   - db
+  ports:
+   - "3000:8080"
+  environment:
+    - DBHOST=db
+    - ASPNETCORE_ENVIRONMENT=Development
+  networks:
+      - my-network
+
+networks:
+  my-network:
