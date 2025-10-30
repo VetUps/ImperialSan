@@ -1,0 +1,122 @@
+﻿<Page x:Class="ImperialSanWPF.Views.Pages.UserBasket"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
+      xmlns:controls="clr-namespace:ImperialSanWPF.Views.Controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="1080" d:DesignWidth="1920"
+      Background="#F2F2F2"
+      Title="Корзина">
+
+    <Grid ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="600*"/>
+            <ColumnDefinition Width="60*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button x:Name="backToCatalogButton"
+                Click="backToCatalogButton_Click"
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                Content="⭠ Вернуться к покупкам"
+                HorizontalAlignment="Left"
+                Padding="5, 10, 5, 10"
+                Margin="15, 0, 0, 0"
+                Height="50"
+                BorderThickness="0"
+                Background="Transparent"
+                Foreground="#FE5B00"
+                FontSize="15"/>
+
+        <TextBlock Text="Моя корзина"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="32"
+                   Foreground="#151716"/>
+
+        <Border Grid.Row="2"
+                Grid.Column="1"
+                Margin="150 50"
+                BorderBrush="#E3E3E3"
+                Background="White"
+                BorderThickness="1"
+                CornerRadius="5">
+            <Grid ShowGridLines="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="105"/>
+                </Grid.RowDefinitions>
+
+                <Grid ShowGridLines="True"
+                      Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="100*"/>
+                        <RowDefinition Height="680*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid ShowGridLines="True"
+                          Grid.Row="0" 
+                          Margin="30, 0">
+                        <Grid.Resources>
+                            <Style x:Key="BasketHeaderTextBlock" TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Foreground" Value="#7B7B7B"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </Grid.Resources>
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Text="Товар" 
+                                   Grid.Column="0"
+                                   Style="{StaticResource BasketHeaderTextBlock}"/>
+                        
+                        <TextBlock Text="Количестов" 
+                                   Grid.Column="1"
+                                   Style="{StaticResource BasketHeaderTextBlock}"/>
+                        
+                        <TextBlock Text="Итого" 
+                                   Grid.Column="2"
+                                   Style="{StaticResource BasketHeaderTextBlock}"/>
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding ProductBasketPositions}"
+                                  Grid.Row="1">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:BasketPositionControl/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        
+                    </ItemsControl>
+                    
+                </Grid>
+
+                <Grid ShowGridLines="True"
+                      Grid.Row="1">
+
+                </Grid>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Page>

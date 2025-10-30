@@ -56,25 +56,9 @@ namespace ImperialSanWPF.Views.Pages
                 else
                 {
                     List<string> errorOrder = ["Email", "Password", "RepeatPassword", "Surname", "Name", "Patronymic", "Phone"];
-                    var errorResponse= await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
-                    if (errorResponse.Errors != null)
-                    {
-                        List<string> errorMessages = new List<string>();
-
-                        foreach (var error in errorOrder)
-                        {
-                            if (errorResponse.Errors.TryGetValue(error, out string[] values))
-                                errorMessages.Add(values[0]);
-                        }
-
-                        MessageBox.Show(errorMessages[0]);
-                    }
-
-                    else
-                    {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
-                    }
+                    string error = await ResponseErrorHandler.ProcessErrors(response, errorOrder);
+                    MessageBox.Show(error, "Ошибка");
                 }
             }
             catch (Exception ex)

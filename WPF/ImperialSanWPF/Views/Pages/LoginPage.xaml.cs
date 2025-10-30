@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ImperialSanWPF.Models;
+using ImperialSanWPF.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,8 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ImperialSanWPF.Models;
-using ImperialSanWPF.Utils;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ImperialSanWPF.Views.Pages
 {
@@ -58,22 +59,8 @@ namespace ImperialSanWPF.Views.Pages
                 }
                 else
                 {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
-
-                    if (errorResponse.Errors != null)
-                    {
-                        List<string> errorMessages = new List<string>();
-
-                        foreach (var error in errorResponse.Errors)
-                            errorMessages.Add(error.Value[0]);
-
-                        MessageBox.Show(errorMessages[0]);
-                    }
-
-                    else
-                    {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
-                    }
+                    string error = await ResponseErrorHandler.ProcessErrors(response);
+                    MessageBox.Show(error, "Ошибка");
                 }
             }
             catch (Exception ex)
@@ -92,25 +79,17 @@ namespace ImperialSanWPF.Views.Pages
                 {
                     var jsonResponse = await response.Content.ReadFromJsonAsync<Basket>();
                     SessionContext.UserBasket = jsonResponse;
+
+                    int count = 0;
+                    foreach (BasketPosition bp in SessionContext.UserBasket.Positions)
+                        count += bp.ProductQuantity;
+
+                    MainWindowClass.mainWindow.BasketCount = count;
                 }
                 else
                 {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
-
-                    if (errorResponse.Errors != null)
-                    {
-                        List<string> errorMessages = new List<string>();
-
-                        foreach (var error in errorResponse.Errors)
-                            errorMessages.Add(error.Value[0]);
-
-                        MessageBox.Show(errorMessages[0]);
-                    }
-
-                    else
-                    {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
-                    }
+                   string error = await ResponseErrorHandler.ProcessErrors(response);
+                   MessageBox.Show(error, "Ошибка");
                 }
             }
             catch (Exception ex)

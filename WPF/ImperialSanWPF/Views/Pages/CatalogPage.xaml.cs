@@ -226,22 +226,7 @@ namespace ImperialSanWPF.Views.Pages
                 }
                 else
                 {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
-
-                    if (errorResponse.Errors != null)
-                    {
-                        List<string> errorMessages = new List<string>();
-
-                        foreach (var error in errorResponse.Errors)
-                            errorMessages.Add(error.Value[0]);
-
-                        MessageBox.Show(errorMessages[0]);
-                    }
-
-                    else
-                    {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
-                    }
+                   await ResponseErrorHandler.ProcessErrors(response);
                 }
             }
             catch (Exception ex)
@@ -271,22 +256,7 @@ namespace ImperialSanWPF.Views.Pages
                 }
                 else
                 {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
-
-                    if (errorResponse.Errors != null)
-                    {
-                        List<string> errorMessages = new List<string>();
-
-                        foreach (var error in errorResponse.Errors)
-                            errorMessages.Add(error.Value[0]);
-
-                        MessageBox.Show(errorMessages[0]);
-                    }
-
-                    else
-                    {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
-                    }
+                    await ResponseErrorHandler.ProcessErrors(response);
                 }
             }
             catch (Exception ex)

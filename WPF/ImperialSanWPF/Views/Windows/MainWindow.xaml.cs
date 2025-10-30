@@ -1,4 +1,9 @@
-﻿using System.Text;
+﻿using ImperialSanWPF.Models;
+using ImperialSanWPF.Utils;
+using ImperialSanWPF.Views.Pages;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,21 +13,46 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ImperialSanWPF.Utils;
-using ImperialSanWPF.Views.Pages;
 
 namespace ImperialSanWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private int _basketCount { get; set; } = 0;
+
         public bool IsLoggedIn { get; private set; }
+
+        public int BasketCount
+        {
+            get => _basketCount;
+
+            set
+            {
+                if (value != _basketCount)
+                {
+                    _basketCount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #region Реализация интерфейса INotifyPropertyChanged
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+
             mainFrame.Navigate(new CatalogPage());
             UpdateHeaderState();
 
@@ -72,7 +102,7 @@ namespace ImperialSanWPF
 
         private void basketButton_Click(object sender, RoutedEventArgs e)
         {
-
+            mainFrame.Navigate(new UserBasket());
         }
 
         private void catalogButton_Click(object sender, RoutedEventArgs e)

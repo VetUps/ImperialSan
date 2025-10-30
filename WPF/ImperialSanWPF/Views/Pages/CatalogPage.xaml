@@ -3,8 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
-      xmlns:conv="clr-namespace:ImperialSanWPF.Utils" xmlns:local1="clr-namespace:ImperialSanWPF.Views.Controllers"
+      xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages" 
+      xmlns:controls="clr-namespace:ImperialSanWPF.Views.Controllers"
+      xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Каталог" Background="White">
@@ -129,7 +130,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local1:ProductControl Height="350"
+                            <controls:ProductControl Height="350"
                                                    Width="250"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

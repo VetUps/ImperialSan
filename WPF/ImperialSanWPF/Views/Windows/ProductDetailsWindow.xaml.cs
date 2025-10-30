@@ -80,26 +80,17 @@ namespace ImperialSanWPF.Views.Windows
                     var jsonResponse = await response.Content.ReadFromJsonAsync<Basket>();
                     SessionContext.UserBasket = jsonResponse;
 
+                    int count = 0;
+                    foreach (BasketPosition bp in SessionContext.UserBasket.Positions)
+                        count += bp.ProductQuantity;
+
+                    MainWindowClass.mainWindow.BasketCount = count;
+
                     MessageBox.Show("Товар добавлен в корзину", "Успешно");
                 }
                 else
                 {
-                    var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
-
-                    if (errorResponse.Errors != null)
-                    {
-                        List<string> errorMessages = new List<string>();
-
-                        foreach (var error in errorResponse.Errors)
-                            errorMessages.Add(error.Value[0]);
-
-                        MessageBox.Show(errorMessages[0]);
-                    }
-
-                    else
-                    {
-                        MessageBox.Show($"Неизвестная ошибка: {response.StatusCode} {errorResponse}");
-                    }
+                    await ResponseErrorHandler.ProcessErrors(response);
                 }
             }
             catch (Exception ex)

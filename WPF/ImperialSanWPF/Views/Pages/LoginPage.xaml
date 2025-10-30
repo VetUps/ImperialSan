@@ -34,6 +34,7 @@
                        HorizontalAlignment="Center" 
                        Margin="10"/>
             <TextBox x:Name="emailTextBox"
+                     Text="test@gmail.com"
                      materialDesign:HintAssist.Hint="Введите почту" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
                      materialDesign:TextFieldAssist.HasOutlinedTextField="True"
@@ -44,6 +45,7 @@
                      Margin="80,10,80,10"/>
 
             <PasswordBox x:Name="passwordTextBox"
+                         Password="123456"
                          materialDesign:HintAssist.Hint="Введите пароль" 
                          materialDesign:HintAssist.Foreground="#7B7B7B"
                          materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
