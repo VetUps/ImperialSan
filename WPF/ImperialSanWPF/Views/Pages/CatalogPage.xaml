@@ -13,7 +13,7 @@
     <Page.Resources>
         <conv:CurrentPageBackgroundConverter x:Key="CurrentPageBackgroundConverter"/>
         <conv:CurrentPageFontWeightConverter x:Key="CurrentPageFontWeightConverter"/>
-        <conv:EmptyCatalogVisivilityConverter x:Key="EmptyCatalogVisivilityConverter"/>
+        <conv:EmptyCollectionConverter x:Key="EmptyCatalogVisivilityConverter"/>
     </Page.Resources>
 
     <Grid ShowGridLines="True">
@@ -172,9 +172,7 @@
                                         </DataTrigger>
 
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#FFF7F2"/>
-                                            <Setter Property="BorderThickness" Value="1"/>
-                                            <Setter Property="BorderBrush" Value="#FF7028"/>
+                                            <Setter Property="Background" Value="#E4E4E4"/>
                                         </Trigger>
 
                                         <DataTrigger Binding="{Binding IsCurrent}" Value="True">

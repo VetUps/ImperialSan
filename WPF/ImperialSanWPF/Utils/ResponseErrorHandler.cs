@@ -16,6 +16,9 @@ namespace ImperialSanWPF.Utils
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
+                if (errorResponse.Errors == null)
+                    return $"Ошибка с кодом: {errorResponse.Status}";
+
                 if (errorOrder == null)
                     errorOrder = errorResponse.Errors.Keys.ToList();
 

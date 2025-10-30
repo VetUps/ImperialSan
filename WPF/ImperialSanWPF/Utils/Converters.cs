@@ -32,7 +32,7 @@ namespace ImperialSanWPF.Utils
             => throw new NotImplementedException();
     }
 
-    public class EmptyCatalogVisivilityConverter : IValueConverter
+    public class EmptyCollectionConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

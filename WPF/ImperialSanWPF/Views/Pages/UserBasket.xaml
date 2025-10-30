@@ -5,12 +5,17 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
       xmlns:controls="clr-namespace:ImperialSanWPF.Views.Controls"
+      xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
       mc:Ignorable="d" 
       d:DesignHeight="1080" d:DesignWidth="1920"
       Background="#F2F2F2"
       Title="Корзина">
 
-    <Grid ShowGridLines="True">
+    <Page.Resources>
+        <conv:EmptyCollectionConverter x:Key="EmptyCollectionConverter"/>
+    </Page.Resources>
+    
+    <Grid ShowGridLines="False">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60*"/>
             <ColumnDefinition Width="600*"/>
@@ -51,22 +56,24 @@
                 Background="White"
                 BorderThickness="1"
                 CornerRadius="5">
-            <Grid ShowGridLines="True">
+            <Grid ShowGridLines="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="105"/>
                 </Grid.RowDefinitions>
 
-                <Grid ShowGridLines="True"
+                <Grid ShowGridLines="False"
                       Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="100*"/>
                         <RowDefinition Height="680*"/>
                     </Grid.RowDefinitions>
 
-                    <Grid ShowGridLines="True"
+                    <Grid ShowGridLines="False"
                           Grid.Row="0" 
-                          Margin="30, 0">
+                          Margin="30, 0"
+                          Visibility="{Binding ProductBasketPositions, 
+                                       Converter={StaticResource EmptyCollectionConverter}}">
                         <Grid.Resources>
                             <Style x:Key="BasketHeaderTextBlock" TargetType="TextBlock">
                                 <Setter Property="FontSize" Value="14"/>
@@ -74,28 +81,33 @@
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                             </Style>
                         </Grid.Resources>
-                        
+
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <TextBlock Text="Товар" 
                                    Grid.Column="0"
                                    Style="{StaticResource BasketHeaderTextBlock}"/>
-                        
-                        <TextBlock Text="Количестов" 
+
+                        <TextBlock Text="Количество" 
                                    Grid.Column="1"
+                                   Margin="30, 0, 0, 0"
                                    Style="{StaticResource BasketHeaderTextBlock}"/>
-                        
+
                         <TextBlock Text="Итого" 
                                    Grid.Column="2"
+                                   Margin="70, 0, 0, 0"
                                    Style="{StaticResource BasketHeaderTextBlock}"/>
                     </Grid>
 
                     <ItemsControl ItemsSource="{Binding ProductBasketPositions}"
-                                  Grid.Row="1">
+                                  Visibility="{Binding ProductBasketPositions, 
+                                               Converter={StaticResource EmptyCollectionConverter}}"
+                                  Grid.Row="1"
+                                  Margin="30, 0">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel/>
@@ -103,18 +115,77 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <controls:BasketPositionControl/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <controls:BasketPositionControl Grid.Column="0"/>
+
+                                    <TextBlock x:Name="deleteBasketPosition"
+                                               PreviewMouseLeftButtonDown="deleteBasketPosition_PreviewMouseLeftButtonDown"
+                                               Style="{StaticResource TextBlockButtonsHover}"
+                                               Grid.Column="1"
+                                               Cursor="Hand"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               Text="x"
+                                               FontSize="32"/>
+                                </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
-                        
                     </ItemsControl>
-                    
+
+                    <TextBlock x:Name="emptyProudctsTextBlock"
+                               Grid.Row="1"
+                               Visibility="{Binding ProductBasketPositions, 
+                                            Converter={StaticResource EmptyCollectionConverter},
+                                            ConverterParameter=Invert}"
+                               Text="Корзина пуста"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
                 </Grid>
 
-                <Grid ShowGridLines="True"
-                      Grid.Row="1">
+                <Border Grid.Row="1"
+                        BorderThickness="0, 1, 0, 0"
+                        BorderBrush="#ECECEC"
+                        Background="#FCFCFC">
 
-                </Grid>
+                    <Grid ShowGridLines="False"
+                          Visibility="{Binding ProductBasketPositions, 
+                                       Converter={StaticResource EmptyCollectionConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center">
+                            <Run Text="Итого  "
+                                 FontSize="15"
+                                 Foreground="#7B7B7B"
+                                 BaselineAlignment="Top"/>
+                            <Run Text="{Binding TotalBasketPrice, StringFormat={}{0:N2} ₽}"
+                                 FontSize="24"
+                                 Foreground="#151716"
+                                 FontWeight="Bold"/>
+                        </TextBlock>
+
+                        <Button x:Name="makeOrderButton" 
+                                Click="makeOrderButton_Click"
+                                Grid.Column="2"
+                                Content="Оформить заказ"
+                                Background="#FF7028"
+                                Height="44"
+                                FontSize="16" 
+                                FontWeight="Bold"
+                                Margin="10, 0, 30, 0"/>
+
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
 

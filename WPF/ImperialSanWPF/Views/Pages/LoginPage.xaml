@@ -34,7 +34,7 @@
                        HorizontalAlignment="Center" 
                        Margin="10"/>
             <TextBox x:Name="emailTextBox"
-                     Text="test@gmail.com"
+                     Text="test1@gmail.com"
                      materialDesign:HintAssist.Hint="Введите почту" 
                      materialDesign:HintAssist.Foreground="#7B7B7B"
                      materialDesign:TextFieldAssist.HasOutlinedTextField="True"

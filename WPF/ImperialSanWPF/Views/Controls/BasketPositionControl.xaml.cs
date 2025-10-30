@@ -1,5 +1,6 @@
 ﻿using ImperialSanWPF.Models;
 using ImperialSanWPF.Utils;
+using ImperialSanWPF.Views.Pages;
 using ImperialSanWPF.Views.Windows;
 using System;
 using System.Collections.Generic;

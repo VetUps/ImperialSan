@@ -8,7 +8,7 @@
              d:DesignHeight="100" d:DesignWidth="1240">
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="130"/>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
@@ -16,7 +16,9 @@
 
         <Image Source="{Binding ImageUrl}"
                Grid.Column="0"
-               HorizontalAlignment="Center"
+               Height="100"
+               Width="100"
+               HorizontalAlignment="Left"
                VerticalAlignment="Center"/>
 
         <TextBlock Text="{Binding ProductTitle}"
@@ -35,12 +37,12 @@
 
                 <TextBlock x:Name="reduceBasketPosition"
                            PreviewMouseLeftButtonDown="reduceBasketPosition_PreviewMouseLeftButtonDown"
+                           Style="{StaticResource TextBlockButtonsHover}"
                            Cursor="Hand"
                            VerticalAlignment="Center"
                            Text="-"
                            FontSize="32"
-                           Padding="15, 0, 15, 7"
-                           Foreground="#C2C2C2"/>
+                           Padding="15, 0, 15, 7"/>
 
                 <TextBlock Text="{Binding ProductQuantity}"
                            FontSize="14"
@@ -50,13 +52,13 @@
                            VerticalAlignment="Center"/>
 
                 <TextBlock x:Name="increaseBasketPosition"
-                        PreviewMouseLeftButtonDown="increaseBasketPosition_PreviewMouseLeftButtonDown"
-                        Cursor="Hand"
-                        VerticalAlignment="Center"
-                        Text="+"
-                        FontSize="32"
-                        Padding="15, 0, 15, 7"
-                        Foreground="#C2C2C2"/>
+                           PreviewMouseLeftButtonDown="increaseBasketPosition_PreviewMouseLeftButtonDown"
+                           Style="{StaticResource TextBlockButtonsHover}"
+                           Cursor="Hand"
+                           VerticalAlignment="Center"
+                           Text="+"
+                           FontSize="32"
+                           Padding="15, 0, 15, 7"/>
 
             </StackPanel>
         </Border>
