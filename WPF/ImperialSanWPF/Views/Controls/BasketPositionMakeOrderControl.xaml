@@ -17,20 +17,24 @@
                Width="56"
                VerticalAlignment="Top"/>
 
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1"
+                    Height="70">
             <StackPanel.Resources>
                 <Style x:Key="InfoTextBlock" TargetType="TextBlock">
                     <Setter Property="FontSize" Value="15"/>
                     <Setter Property="Foreground" Value="#151716"/>
+                    <Setter Property="Margin" Value="10, 0, 0, 0"/>
                 </Style>
             </StackPanel.Resources>
-            
+
             <TextBlock Text="{Binding ProductTitle}"
                        Style="{StaticResource InfoTextBlock}"
                        TextTrimming="CharacterEllipsis"
-                       MaxHeight="66"
+                       Height="50"
                        TextWrapping="Wrap"/>
-            <TextBlock/>
+
+            <TextBlock Text="{Binding ProductQuantity, StringFormat={}{0} шт.}"
+                       Style="{StaticResource InfoTextBlock}"/>
         </StackPanel>
 
     </Grid>

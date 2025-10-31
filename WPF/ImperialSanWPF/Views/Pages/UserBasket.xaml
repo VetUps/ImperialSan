@@ -103,39 +103,41 @@
                                    Style="{StaticResource BasketHeaderTextBlock}"/>
                     </Grid>
 
-                    <ItemsControl ItemsSource="{Binding ProductBasketPositions}"
-                                  Visibility="{Binding ProductBasketPositions, 
-                                               Converter={StaticResource EmptyCollectionConverter}}"
+                    <ScrollViewer Visibility="{Binding ProductBasketPositions, 
+                                  Converter={StaticResource EmptyCollectionConverter}}"
                                   Grid.Row="1"
                                   Margin="30, 0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
 
-                                    <controls:BasketPositionControl Grid.Column="0"/>
+                        <ItemsControl ItemsSource="{Binding ProductBasketPositions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <TextBlock x:Name="deleteBasketPosition"
-                                               PreviewMouseLeftButtonDown="deleteBasketPosition_PreviewMouseLeftButtonDown"
-                                               Style="{StaticResource TextBlockButtonsHover}"
-                                               Grid.Column="1"
-                                               Cursor="Hand"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               Text="x"
-                                               FontSize="32"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                        <controls:BasketPositionControl Grid.Column="0"/>
+
+                                        <TextBlock x:Name="deleteBasketPosition"
+                                                   PreviewMouseLeftButtonDown="deleteBasketPosition_PreviewMouseLeftButtonDown"
+                                                   Style="{StaticResource TextBlockButtonsHover}"
+                                                   Grid.Column="1"
+                                                   Cursor="Hand"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   Text="x"
+                                                   FontSize="32"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
 
                     <TextBlock x:Name="emptyProudctsTextBlock"
                                Grid.Row="1"

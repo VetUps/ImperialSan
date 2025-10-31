@@ -191,7 +191,7 @@ namespace ImperialSanWPF.Views.Pages
 
         private void makeOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            //NavigationService.Navigate(new MakeOrderPage());
+            NavigationService.Navigate(new MakeOrderPage(TotalBasketPrice, ProductBasketPositions.ToList()));
         }
     }
 }
