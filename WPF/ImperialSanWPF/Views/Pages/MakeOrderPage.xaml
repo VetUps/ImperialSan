@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
       xmlns:controls="clr-namespace:ImperialSanWPF.Views.Controls"
+      xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       mc:Ignorable="d" 
       d:DesignHeight="1080" d:DesignWidth="1920"
       Background="#F2F2F2"
@@ -82,7 +83,9 @@
                     Margin="0, 0, 45, 0">
 
                 <Grid Margin="30">
-                    
+                    <wv2:WebView2 x:Name="MapWebView" 
+                                  Source="file:///"
+                                  WebMessageReceived="MapWebView_WebMessageReceived"/>
                 </Grid>
 
             </Border>

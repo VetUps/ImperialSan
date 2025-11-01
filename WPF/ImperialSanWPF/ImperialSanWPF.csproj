@@ -36,9 +36,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Maps\maps.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Maps\maps.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
     <PackageReference Include="MaterialDesignColors" Version="5.3.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.3.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3537.50" />
   </ItemGroup>
 
   <ItemGroup>

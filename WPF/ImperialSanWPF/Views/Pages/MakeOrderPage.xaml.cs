@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ImperialSanWPF.Models;
@@ -46,6 +38,15 @@ namespace ImperialSanWPF.Views.Pages
             BasketpositionsForOrder = positions;
 
             DataContext = this;
+
+
+            string exeDir = AppDomain.CurrentDomain.BaseDirectory;
+            string mapPath = System.IO.Path.Combine(exeDir, "Resources", "Maps", "maps.html");
+
+            if (File.Exists(mapPath))
+                MapWebView.Source = new Uri(mapPath);
+            else
+                MessageBox.Show("Карта не найдена!");
         }
 
         private void backToBasketButton_Click(object sender, RoutedEventArgs e)
@@ -91,5 +92,21 @@ namespace ImperialSanWPF.Views.Pages
                 carouselIndicator.Value -= 1;
             }
         }
+
+        private void MapWebView_WebMessageReceived(object sender, Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            var message = JsonSerializer.Deserialize<WebMessage>(e.WebMessageAsJson);
+            if (message?.type == "mapClick")
+            {
+                MessageBox.Show($"{message.lat} {message.lon}");
+            }
+        }
+    }
+
+    public class WebMessage
+    {
+        public string? type { get; set; }
+        public double lat { get; set; }
+        public double lon { get; set; }
     }
 }
