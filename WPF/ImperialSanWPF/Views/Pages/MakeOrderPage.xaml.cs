@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ImperialSanWPF.Models;
+using ImperialSanWPF.Utils;
 
 namespace ImperialSanWPF.Views.Pages
 {
@@ -16,6 +19,7 @@ namespace ImperialSanWPF.Views.Pages
     public partial class MakeOrderPage : Page
     {
         public float TotalPirce {  get; private set; }
+        public Order CurrentOrder { get; private set; } = new Order();
 
         private List<ProductBasketPosition> _basketPositionsForOrder;
 
@@ -98,7 +102,46 @@ namespace ImperialSanWPF.Views.Pages
             var message = JsonSerializer.Deserialize<WebMessage>(e.WebMessageAsJson);
             if (message?.type == "mapClick")
             {
-                MessageBox.Show($"{message.lat} {message.lon}");
+                CurrentOrder.DiliveryAddress = message.address;
+            }
+            else
+            {
+                MessageBox.Show($"Событие другого типа: {message?.type}");
+            }
+        }
+
+        private void PaymentMethoButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            string paymentMethod = button.Content.ToString();
+            CurrentOrder.PaymentMethod = paymentMethod;
+        }
+
+        private async void makeOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CurrentOrder.UserComment = CurrentOrder.UserComment == null ? "" : CurrentOrder.UserComment;
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.PostAsJsonAsync($"Order/make_order", CurrentOrder);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show(result);
+                    SessionContext.UserBasket = new Basket();
+                    MainWindowClass.mainWindow.BasketCount = 0;
+
+                    NavigationService.Navigate(new SuccessOrderPage());
+                }
+                else
+                {
+                    string error = await ResponseErrorHandler.ProcessErrors(response);
+                    MessageBox.Show(error, "Ошибка");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
         }
     }
@@ -106,7 +149,6 @@ namespace ImperialSanWPF.Views.Pages
     public class WebMessage
     {
         public string? type { get; set; }
-        public double lat { get; set; }
-        public double lon { get; set; }
+        public string address { get; set; }
     }
 }

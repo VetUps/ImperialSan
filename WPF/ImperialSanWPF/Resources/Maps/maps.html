@@ -19,18 +19,30 @@
         ymaps.ready(init);
         function init() {
             var myMap = new ymaps.Map('map', {
-                center: [55.751574, 37.573856], // Москва
+                center: [54.759497, 56.009543],
                 zoom: 10
             });
 
-            myMap.events.add('click', function (e) {
+            myMap.events.add('click', async function (e) {
                 var coords = e.get('coords');
-                console.log(coords)
-                window.chrome.webview.postMessage({
-                    type: 'mapClick',
-                    lat: coords[0],
-                    lon: coords[1]
-                });
+
+                try {
+                    var geocodeResult = await ymaps.geocode(coords);
+
+                    var address = geocodeResult.geoObjects.get(0);
+                    var addressText = address ? address.getAddressLine() : "Адрес не найден";
+
+                    window.chrome.webview.postMessage({
+                        type: 'mapClick',
+                        address: addressText
+                    });
+
+                } catch (error) {
+                    window.chrome.webview.postMessage({
+                        type: 'mapClick',
+                        address: null
+                    });
+                }
             });
         }
     </script>

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows;
+using ImperialSanWPF.Models;
 
 namespace ImperialSanWPF.Utils
 {
@@ -52,6 +53,17 @@ namespace ImperialSanWPF.Utils
             }
 
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
+
+    public class OrderStatmentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
+        {
+            return value == null ? false : true;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
