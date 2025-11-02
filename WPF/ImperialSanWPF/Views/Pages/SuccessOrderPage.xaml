@@ -21,7 +21,12 @@
 
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <Image/>
+
+                <Image Source="/Resources/Images/success_chekuot.png"
+                       Height="80"
+                       Width="80"
+                       Margin="0, 0, 0, 15"/>
+
                 <TextBlock Text="Заказ оформлен"
                            HorizontalAlignment="Center"
                            FontSize="32"

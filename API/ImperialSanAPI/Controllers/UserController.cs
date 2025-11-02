@@ -129,6 +129,7 @@ namespace ImperialSanAPI.Controllers
                     UserMail = registerUserDto.Email,
                     UserName = registerUserDto.Name,
                     UserSurname = registerUserDto.Surname,
+                    UserPatronymic = registerUserDto.Patronymic,
                     UserPhone = registerUserDto.Phone,
                     Role = "User",
                     PasswordHash = SecurityService.HashPassword(registerUserDto.Password)

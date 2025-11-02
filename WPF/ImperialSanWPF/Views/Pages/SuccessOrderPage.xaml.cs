@@ -27,7 +27,7 @@ namespace ImperialSanWPF.Views.Pages
 
         private void toProfileRun_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //NavigationService.Navigate(new UserProfilePage());
+            NavigationService.Navigate(new UserProfilePage());
         }
 
         private void continuePurchasesButton_Click(object sender, RoutedEventArgs e)

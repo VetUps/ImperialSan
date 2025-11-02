@@ -36,6 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\default_user_avatar.jpg" />
+    <None Remove="Resources\Images\success_chekuot.png" />
     <None Remove="Resources\Maps\maps.html" />
   </ItemGroup>
 
@@ -53,7 +55,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\default_user_avatar.jpg" />
     <Resource Include="Resources\Images\logo.png" />
+    <Resource Include="Resources\Images\success_chekuot.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -51,6 +51,50 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
+        // Получить чек заказа
+        [HttpGet("get_receipt/{orderId}")]
+        public ActionResult<List<OrderDTO>> GetOrderReceipt(int orderId)
+        {
+            using (ImperialSanContext context = new ImperialSanContext())
+            {
+                var order =  context.Orders
+                                    .Include(o => o.OrderPositions)
+                                    .ThenInclude(op => op.Product)
+                                    .FirstOrDefault(o => o.OrderId == orderId);
+
+                if (order == null)
+                    return NotFound(new UsualProblemDetails
+                    {
+                        Title = "Ошибка получения заказа",
+                        Status = StatusCodes.Status404NotFound,
+                        Errors = new Dictionary<string, string[]>()
+                        {
+                               { "Order", ["Заказ не найден"]}
+                        },
+                    });
+
+                var dto = new OrderReceiptDTO
+                {
+                    OrderId = order.OrderId,
+                    DateOfCreate = order.DateOfCreate,
+                    DeliveryAddress = order.DiliveryAddres ?? "",
+                    PaymentMethod = order.PaymentMethod ?? "",
+                    TotalPrice = order.Price,
+                    Positions = order.OrderPositions.Select(op => new OrderReceiptPositionDTO
+                    {
+                        ProductId = op.ProductId,
+                        ProductTitle = op.Product?.ProductTitle ?? "Неизвестный товар",
+                        Price = op.ProductPriceInMoment,
+                        Quantity = (int)op.ProductQuantity
+                    }).ToList()
+                };
+
+                var pdfBytes = ReceiptService.GenerateReceiptPdf(dto);
+
+                return File(pdfBytes, "application/pdf", $"Чек_Заказ_{orderId}.pdf");
+            }
+        }
+
         // Сделать заказ 
         [HttpPost("make_order")]
         public IActionResult MakeOrder([FromBody] MakeOrderDTO makeOrderDto)

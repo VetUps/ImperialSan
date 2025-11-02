@@ -69,7 +69,7 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
 
-        private async void LoadBasket()
+        private async Task LoadBasket()
         {
             try
             {

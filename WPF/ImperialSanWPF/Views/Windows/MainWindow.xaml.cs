@@ -97,7 +97,7 @@ namespace ImperialSanWPF
 
         private void profileButton_Click(object sender, RoutedEventArgs e)
         {
-
+            mainFrame.Navigate(new UserProfilePage());
         }
 
         private void basketButton_Click(object sender, RoutedEventArgs e)

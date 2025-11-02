@@ -11,7 +11,7 @@ namespace ImperialSanWPF.Utils
     {
         public static HttpClient httpClient = new()
         {
-            BaseAddress = new Uri("http://localhost:3000/api/"),
+            BaseAddress = new Uri("http://localhost:5020/api/"),
         };
     }
 }
