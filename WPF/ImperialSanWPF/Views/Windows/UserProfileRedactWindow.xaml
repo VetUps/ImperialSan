@@ -33,6 +33,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
@@ -115,7 +116,12 @@
                     </StackPanel>
                 </Expander>
 
-                <Grid Grid.Row="6">
+                <TextBlock Text="Допустимые символы: a-zA-Z0-9!@#$%^*_+-=|?"
+                           Grid.Row="6"
+                           Foreground="#7B7B7B"
+                           Margin="0, 0, 0, 5"/>
+                
+                <Grid Grid.Row="7">
                     <PasswordBox x:Name="PasswordBox"
                                  Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                  materialDesign:HintAssist.Hint="Новый пароль (необязательно)" 
@@ -149,7 +155,7 @@
                     </Button>
                 </Grid>
 
-                <StackPanel Grid.Row="7"
+                <StackPanel Grid.Row="8"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             Margin="0, 15, 0, 0">

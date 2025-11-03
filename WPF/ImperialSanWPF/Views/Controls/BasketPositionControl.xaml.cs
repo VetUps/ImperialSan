@@ -69,7 +69,7 @@ namespace ImperialSanWPF.Views.Controls
                     else
                     {
                         string error = await ResponseErrorHandler.ProcessErrors(response);
-                        MessageBox.Show(error, "Ошибка");
+                        MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 catch (Exception ex)
@@ -117,7 +117,7 @@ namespace ImperialSanWPF.Views.Controls
                     else
                     {
                         string error = await ResponseErrorHandler.ProcessErrors(response);
-                        MessageBox.Show(error, "Ошибка");
+                        MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 catch (Exception ex)

@@ -120,7 +120,7 @@ namespace ImperialSanWPF.Views.Pages
                     List<string> errorOrder = ["Email", "Password", "RepeatPassword", "Surname", "Name", "Patronymic", "Phone"];
 
                     string error = await ResponseErrorHandler.ProcessErrors(response, errorOrder);
-                    MessageBox.Show(error, "Ошибка");
+                    MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)

@@ -41,7 +41,6 @@ namespace ImperialSanWPF.Views.Controls
                 {
                     var pdfBytes = await response.Content.ReadAsByteArrayAsync();
 
-                    // Сохраняем файл
                     var saveFileDialog = new SaveFileDialog
                     {
                         Filter = "PDF файлы (*.pdf)|*.pdf|Все файлы (*.*)|*.*",
@@ -57,7 +56,7 @@ namespace ImperialSanWPF.Views.Controls
                 else
                 {
                     string error = await ResponseErrorHandler.ProcessErrors(response);
-                    MessageBox.Show(error, "Ошибка");
+                    MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)

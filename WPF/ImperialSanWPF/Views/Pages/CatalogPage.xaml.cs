@@ -226,7 +226,8 @@ namespace ImperialSanWPF.Views.Pages
                 }
                 else
                 {
-                   await ResponseErrorHandler.ProcessErrors(response);
+                   string error = await ResponseErrorHandler.ProcessErrors(response);
+                   MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
@@ -256,7 +257,8 @@ namespace ImperialSanWPF.Views.Pages
                 }
                 else
                 {
-                    await ResponseErrorHandler.ProcessErrors(response);
+                    string error = await ResponseErrorHandler.ProcessErrors(response);
+                    MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)

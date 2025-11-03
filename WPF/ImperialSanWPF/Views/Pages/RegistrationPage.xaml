@@ -51,6 +51,10 @@
                      Margin="80,10,80,10"
                      MaxLength="100"/>
 
+            <TextBlock Text="Допустимые символы: a-zA-Z0-9!@#$%^*_+-=|?"
+                       Foreground="#7B7B7B"
+                       Margin="80,10,80,0"/>
+
             <Grid Margin="80,10,80,10">
                 <PasswordBox x:Name="PasswordBox"
                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
