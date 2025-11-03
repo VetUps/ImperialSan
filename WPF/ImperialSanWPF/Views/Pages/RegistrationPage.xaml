@@ -5,9 +5,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
       mc:Ignorable="d" 
       d:DesignHeight="1010" d:DesignWidth="1920"
       Title="RegistrationPage">
+
+    <Page.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
+        <conv:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter"/>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -44,32 +51,73 @@
                      Margin="80,10,80,10"
                      MaxLength="100"/>
 
+            <Grid Margin="80,10,80,10">
+                <PasswordBox x:Name="PasswordBox"
+                             Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                             materialDesign:HintAssist.Hint="Пароль" 
+                             materialDesign:HintAssist.Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                             FontSize="16" 
+                             Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.HasFilledTextField="True"
+                             materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                             PasswordChanged="PasswordBox_PasswordChanged"
+                             Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVisibilityInvertedConverter}}"/>
 
-            <PasswordBox x:Name="passwordTextBox"
-                         materialDesign:HintAssist.Hint="Введите пароль" 
+                <TextBox x:Name="VisiblePasswordBox"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Пароль" 
                          materialDesign:HintAssist.Foreground="#7B7B7B"
-                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
-                         materialDesign:TextFieldAssist.HasTrailingIcon="True"
                          materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                          FontSize="16" 
-                         BorderThickness="1"
-                         BorderBrush="#7B7B7B"
                          Foreground="#7B7B7B"
-                         Margin="80,10,80,10"/>
+                         materialDesign:TextFieldAssist.HasFilledTextField="True"
+                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                         Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-            <PasswordBox x:Name="repeatPasswordTextBox"
-                         materialDesign:HintAssist.Hint="Введите пароль ещё раз" 
+                <Button Style="{StaticResource MaterialDesignToolButton}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Width="30" Height="30"
+                        Click="TogglePasswordVisibility_Click">
+                    <materialDesign:PackIcon Kind="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"/>
+                </Button>
+            </Grid>
+
+            <Grid Margin="80,10,80,10">
+                <PasswordBox x:Name="RepeatPasswordBox"
+                             Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                             materialDesign:HintAssist.Hint="Повторите пароль" 
+                             materialDesign:HintAssist.Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                             FontSize="16" 
+                             Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.HasFilledTextField="True"
+                             materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                             PasswordChanged="RepeatPasswordBox_PasswordChanged"
+                             Visibility="{Binding IsRepeatPasswordVisible, Converter={StaticResource BoolToVisibilityInvertedConverter}}"/>
+
+                <TextBox x:Name="VisibleRepeatPasswordBox"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Повторите пароль" 
                          materialDesign:HintAssist.Foreground="#7B7B7B"
-                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
-                         materialDesign:TextFieldAssist.HasTrailingIcon="True"
                          materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                          FontSize="16" 
-                         BorderThickness="1"
-                         BorderBrush="#7B7B7B"
                          Foreground="#7B7B7B"
-                         Margin="80,10,80,10"/>
+                         materialDesign:TextFieldAssist.HasFilledTextField="True"
+                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                         Text="{Binding RepeatPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Visibility="{Binding IsRepeatPasswordVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <Button Style="{StaticResource MaterialDesignToolButton}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Width="30" Height="30"
+                        Click="ToggleRepeatPasswordVisibility_Click">
+                    <materialDesign:PackIcon Kind="{Binding IsRepeatPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"/>
+                </Button>
+            </Grid>
 
             <TextBox x:Name="surnameTextBox"
                      materialDesign:HintAssist.Hint="Введите фамилию" 

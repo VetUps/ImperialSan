@@ -5,9 +5,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:ImperialSanWPF.Views.Pages"
+      xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
       mc:Ignorable="d" 
       d:DesignHeight="1010" d:DesignWidth="1920"
       Title="LoginPage">
+
+    <Page.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
+        <conv:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter"/>
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -44,17 +51,39 @@
                      Foreground="#7B7B7B"
                      Margin="80,10,80,10"/>
 
-            <PasswordBox x:Name="passwordTextBox"
-                         Password="123456"
-                         materialDesign:HintAssist.Hint="Введите пароль" 
+            <Grid Margin="80,10,80,10">
+                <PasswordBox x:Name="PasswordBox"
+                             Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                             materialDesign:HintAssist.Hint="Пароль" 
+                             materialDesign:HintAssist.Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                             FontSize="16" 
+                             Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.HasFilledTextField="True"
+                             materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                             PasswordChanged="PasswordBox_PasswordChanged"
+                             Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVisibilityInvertedConverter}}"/>
+
+                <TextBox x:Name="VisiblePasswordBox"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Пароль" 
                          materialDesign:HintAssist.Foreground="#7B7B7B"
                          materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
-                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
-                         materialDesign:TextFieldAssist.HasTrailingIcon="True"
-                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                          FontSize="16" 
                          Foreground="#7B7B7B"
-                         Margin="80,10,80,10"/>
+                         materialDesign:TextFieldAssist.HasFilledTextField="True"
+                         materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                         Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                
+                <Button Style="{StaticResource MaterialDesignToolButton}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Width="30" Height="30"
+                        Click="TogglePasswordVisibility_Click">
+                    <materialDesign:PackIcon Kind="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"/>
+                </Button>
+            </Grid>
 
             <Button x:Name="loginButton" 
                     Content="Войти"

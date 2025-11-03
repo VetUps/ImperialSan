@@ -2,9 +2,11 @@
 using ImperialSanWPF.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,11 +26,42 @@ namespace ImperialSanWPF.Views.Pages
     /// <summary>
     /// Логика взаимодействия для LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : Page
+    public partial class LoginPage : Page, INotifyPropertyChanged
     {
+        private string _password = "";
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isPasswordVisible = false;
+        public bool IsPasswordVisible
+        {
+            get => _isPasswordVisible;
+            set
+            {
+                _isPasswordVisible = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public LoginPage()
         {
             InitializeComponent();
+
+            DataContext = this;
         }
 
         private void OnLoginSuccess()
@@ -44,7 +77,7 @@ namespace ImperialSanWPF.Views.Pages
                 var loginModel = new
                 {
                     email = emailTextBox.Text,
-                    password = passwordTextBox.Password,
+                    password = Password,
                 };
 
                 using HttpResponseMessage response = await BaseHttpClient.httpClient.PostAsJsonAsync("User/login", loginModel);
@@ -101,6 +134,25 @@ namespace ImperialSanWPF.Views.Pages
         private void registartionButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new RegistrationPage());
+        }
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            Password = PasswordBox.Password;
+        }
+
+        private void VisiblePasswordBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            PasswordBox.Password = VisiblePasswordBox.Text;
+        }
+
+        private void TogglePasswordVisibility_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsPasswordVisible)
+            {
+                PasswordBox.Password = Password;
+            }
+
+            IsPasswordVisible = !IsPasswordVisible;
         }
     }
 }

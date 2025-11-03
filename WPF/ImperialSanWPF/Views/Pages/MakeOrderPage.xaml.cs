@@ -40,6 +40,7 @@ namespace ImperialSanWPF.Views.Pages
 
             TotalPirce = price;
             BasketpositionsForOrder = positions;
+            GetDefaultUserDeliveryAddressAsync();
 
             DataContext = this;
 
@@ -132,6 +133,29 @@ namespace ImperialSanWPF.Views.Pages
                     MainWindowClass.mainWindow.BasketCount = 0;
 
                     NavigationService.Navigate(new SuccessOrderPage());
+                }
+                else
+                {
+                    string error = await ResponseErrorHandler.ProcessErrors(response);
+                    MessageBox.Show(error, "Ошибка");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
+            }
+        }
+
+        private async Task GetDefaultUserDeliveryAddressAsync()
+        {
+            try
+            {
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync($"User/{SessionContext.UserId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadFromJsonAsync<UserData>();
+                    CurrentOrder.DiliveryAddress = jsonResponse.DeliveryAddress;
                 }
                 else
                 {

@@ -1,0 +1,176 @@
+﻿<Window x:Class="ImperialSanWPF.Views.Windows.UserProfileRedactWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImperialSanWPF.Views.Windows"
+        xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d"
+        Title="Редактирование профиля" 
+        Height="570" 
+        Width="500"
+        Icon="/Resources/Images/logo.png"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
+        <conv:BoolToEyeIconConverter x:Key="BoolToEyeIconConverter"/>
+    </Window.Resources>
+    
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+              VerticalScrollBarVisibility="Auto">
+            <Grid Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Редактирование профиля"
+                           Grid.Row="0"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="#151716"
+                           Margin="0,0,0,20"/>
+
+                <TextBox x:Name="SurnameBox"
+                         Grid.Row="1"
+                         materialDesign:HintAssist.Hint="Фамилия" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         FontSize="16" 
+                         Foreground="#7B7B7B"
+                         Text="{Binding Data.Surname}"
+                         Margin="0,0,0,10"/>
+
+                <TextBox x:Name="NameBox"
+                         Grid.Row="2"
+                         Text="{Binding Data.Name}"
+                         materialDesign:HintAssist.Hint="Имя" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         FontSize="16" 
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"/>
+
+                <TextBox x:Name="PatronymicBox"
+                         Grid.Row="3"
+                         Text="{Binding Data.Patronymic}"
+                         materialDesign:HintAssist.Hint="Отчество" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         FontSize="16" 
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"/>
+
+                <TextBox x:Name="PhoneBox"
+                         Grid.Row="4"
+                         Text="{Binding Data.Phone}"
+                         materialDesign:HintAssist.Hint="Телефон (11 цифр)" 
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         FontSize="16" 
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"/>
+
+                <Expander Grid.Row="5"
+                          Background="Transparent"
+                          BorderThickness="1"
+                          BorderBrush="#FE5B00"
+                          Margin="0,0,0,10">
+                    <Expander.Header>
+                        <TextBlock Text="Адрес доставки"
+                                   FontSize="16"
+                                   Foreground="#151716"/>
+                    </Expander.Header>
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Укажите адресс доставки, нажав на карту"
+                                   HorizontalAlignment="Center"
+                                   FontSize="15"
+                                   Foreground="#151716"/>
+                        <wv2:WebView2 x:Name="MapWebView" 
+                                      Grid.Row="1"
+                                      Height="500"
+                                      Source="file:///"
+                                      WebMessageReceived="MapWebView_WebMessageReceived"/>
+                        <TextBlock Text="{Binding Data.DeliveryAddress, StringFormat={}Адрес доставки: {0}}"
+                                   Margin="0, 10, 0, 0"
+                                   HorizontalAlignment="Left"
+                                   FontSize="15"
+                                   Foreground="#151716"/>
+                    </StackPanel>
+                </Expander>
+
+                <Grid Grid.Row="6">
+                    <PasswordBox x:Name="PasswordBox"
+                                 Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                                 materialDesign:HintAssist.Hint="Новый пароль (необязательно)" 
+                                 materialDesign:HintAssist.Foreground="#7B7B7B"
+                                 materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                                 FontSize="16" 
+                                 Foreground="#7B7B7B"
+                                 materialDesign:TextFieldAssist.HasFilledTextField="True"
+                                 materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                                 PasswordChanged="PasswordBox_PasswordChanged"
+                                 Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVisibilityInvertedConverter}}"/>
+
+                    <TextBox x:Name="VisiblePasswordBox"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             materialDesign:HintAssist.Hint="Новый пароль (необязательно)" 
+                             materialDesign:HintAssist.Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                             FontSize="16" 
+                             Foreground="#7B7B7B"
+                             materialDesign:TextFieldAssist.HasFilledTextField="True"
+                             materialDesign:TextFieldAssist.TrailingIcon="Eye"
+                             Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                    <Button Style="{StaticResource MaterialDesignToolButton}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Width="30" Height="30"
+                            Click="TogglePasswordVisibility_Click">
+                        <materialDesign:PackIcon Kind="{Binding IsPasswordVisible, Converter={StaticResource BoolToEyeIconConverter}}"/>
+                    </Button>
+                </Grid>
+
+                <StackPanel Grid.Row="7"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0, 15, 0, 0">
+                    <Button x:Name="CancelButton"
+                            Content="Отмена"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="#FF7028"
+                            Height="44"
+                            FontSize="16" 
+                            Click="CancelButton_Click"
+                            Margin="0,0,10,0"/>
+
+                    <Button x:Name="SaveButton"
+                            Content="Сохранить"
+                            Background="#FF7028"
+                            BorderThickness="0"
+                            Height="44"
+                            FontSize="16" 
+                            Click="SaveButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

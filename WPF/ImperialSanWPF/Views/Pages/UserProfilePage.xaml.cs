@@ -1,5 +1,7 @@
 ﻿using ImperialSanWPF.Models;
 using ImperialSanWPF.Utils;
+using ImperialSanWPF.Views.Controls;
+using ImperialSanWPF.Views.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,9 +29,10 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class UserProfilePage : Page, INotifyPropertyChanged
     {
-        private List<OrderForProfile> _userOrders;
+        private ObservableCollection<OrderForProfile> _userOrders;
+        private UserData _user;
 
-        public List<OrderForProfile> UserOrders
+        public ObservableCollection<OrderForProfile> UserOrders
         {
             get => _userOrders;
 
@@ -42,8 +45,20 @@ namespace ImperialSanWPF.Views.Pages
                 }
             }
         }
-        public UserData User {  get; private set; }
 
+        public UserData User 
+        {
+            get => _user;
+
+            set
+            {
+                if (value != _user)
+                {
+                    _user = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #region Реализация интерфейса INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -59,7 +74,6 @@ namespace ImperialSanWPF.Views.Pages
 
             GetUserDataAsync();
             GetUserOrdersAsync();
-            DataContext = this;
         }
 
         private async Task GetUserDataAsync()
@@ -93,7 +107,7 @@ namespace ImperialSanWPF.Views.Pages
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var jsonResponse = await response.Content.ReadFromJsonAsync<List<OrderForProfile>>();
+                    var jsonResponse = await response.Content.ReadFromJsonAsync<ObservableCollection<OrderForProfile>>();
                     UserOrders = jsonResponse;
 
                     foreach (var order in UserOrders)
@@ -114,6 +128,8 @@ namespace ImperialSanWPF.Views.Pages
             {
                 MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
+
+            DataContext = this;
         }
 
         private async Task<string> GetProductImageUrlAsync(int productId)
@@ -139,6 +155,21 @@ namespace ImperialSanWPF.Views.Pages
                 MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
                 return "";
             }
+        }
+
+        private void redactUserProfileButton_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var window = new UserProfileRedactWindow(_user);
+
+            window.Saved += () =>
+            {
+                window.Close();
+                _ = GetUserDataAsync();
+            };
+
+            window.Canceled += window.Close;
+
+            window.ShowDialog();
         }
     }
 }

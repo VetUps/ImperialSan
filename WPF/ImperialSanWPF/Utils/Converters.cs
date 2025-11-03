@@ -1,4 +1,5 @@
 ﻿using ImperialSanWPF.Models;
+using MaterialDesignThemes.Wpf;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -59,6 +60,39 @@ namespace ImperialSanWPF.Utils
         public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
         {
             return value == null ? false : true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
+
+    public class BoolToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
+        {
+            return (bool)value ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
+
+    public class BoolToVisibilityInvertedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
+        {
+            return (bool)value ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
+
+    public class BoolToEyeIconConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
+        {
+            return (bool)value ? PackIconKind.EyeOff : PackIconKind.Eye;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

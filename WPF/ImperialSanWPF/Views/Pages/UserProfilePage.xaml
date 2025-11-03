@@ -68,6 +68,7 @@
                                HorizontalAlignment="Center"/>
 
                     <TextBlock x:Name="redactUserProfileButton"
+                               PreviewMouseLeftButtonDown="redactUserProfileButton_PreviewMouseLeftButtonDown"
                                Text="Редактировать профиль"
                                FontSize="15"
                                Foreground="#FF7028"
