@@ -17,6 +17,7 @@ namespace ImperialSanWPF.Models
         public int BasketPositionId { get; set; }
         public string? ImageUrl { get; set; }
         public string? ProductTitle { get; set; }
+        public int ProductQuantityInStock { get; set; }
 
         public int ProductQuantity
         {

@@ -104,33 +104,39 @@
             </ScrollViewer>
         </Grid>
 
-        <Grid Grid.Row="3"
-              Grid.Column="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="170*"/>
-                <ColumnDefinition Width="10*"/>
-                <ColumnDefinition Width="205*"/>
-                <ColumnDefinition Width="5*"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="3"
+                Grid.ColumnSpan="4"
+                BorderThickness="0, 1, 0, 0"
+                BorderBrush="#ECECEC"
+                Background="#FCFCFC">
 
-            <TextBlock x:Name="productPriceTextBlock"
-                       Text="{Binding Price, StringFormat={}{0:N2} ₽}"
-                       Grid.Column="0"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       Foreground="#151716"/>
+            <Grid HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="205*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
 
-            <Button x:Name="addToBasketButton"
-                    Grid.Column="2"
-                    Click="addToBasketButton_Click"
-                    Content="Добавить в корзину"
-                    Background="#FF7028"
-                    Height="44"
-                    FontSize="16" 
-                    FontWeight="Bold"
-                    Margin="10, 0, 30, 0"/>
-        </Grid>
+                <TextBlock x:Name="productPriceTextBlock"
+                           Text="{Binding Price, StringFormat={}{0:N2} ₽}"
+                           Grid.Column="0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="#151716"/>
+
+                <Button x:Name="addToBasketButton"
+                        Grid.Column="2"
+                        Click="addToBasketButton_Click"
+                        Content="Добавить в корзину"
+                        Background="#FF7028"
+                        Height="44"
+                        FontSize="16" 
+                        FontWeight="Bold"
+                        Margin="10, 0, 30, 0"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

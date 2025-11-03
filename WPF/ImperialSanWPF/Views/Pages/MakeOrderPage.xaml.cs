@@ -128,7 +128,6 @@ namespace ImperialSanWPF.Views.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     string result = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show(result);
                     SessionContext.UserBasket = new Basket();
                     MainWindowClass.mainWindow.BasketCount = 0;
 

@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImperialSanWPF.Views.Controls"
+             xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="1240">
+
+    <UserControl.Resources>
+        <conv:StockAvailabilityColorConverter x:Key="StockAvailabilityColorConverter"/>
+    </UserControl.Resources>
+    
     <Grid Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="130"/>
@@ -21,12 +27,31 @@
                HorizontalAlignment="Left"
                VerticalAlignment="Center"/>
 
-        <TextBlock Text="{Binding ProductTitle}"
-                   Grid.Column="1"
-                   VerticalAlignment="Center"
-                   TextWrapping="Wrap"
-                   FontSize="16"
-                   Foreground="#151716"/>
+
+        <StackPanel Grid.Column="1"
+                    VerticalAlignment="Center">
+            
+            <TextBlock Text="{Binding ProductTitle}"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="16"
+                       Foreground="#151716"
+                       Margin="0, 0, 0, 10"/>
+
+            <TextBlock Text="{Binding ProductQuantityInStock, StringFormat={}Доступно: {0} шт.}"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="16">
+                
+                <TextBlock.Foreground>
+                    <MultiBinding Converter="{StaticResource StockAvailabilityColorConverter}">
+                        <Binding Path="ProductQuantityInStock"/>
+                        <Binding Path="ProductQuantity"/>
+                    </MultiBinding>
+                </TextBlock.Foreground>
+            </TextBlock>
+
+        </StackPanel>
 
         <Border Grid.Column="2"
                 HorizontalAlignment="Center"

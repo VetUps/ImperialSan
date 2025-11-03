@@ -50,7 +50,7 @@ namespace ImperialSanWPF.Views.Windows
         {
             if (SessionContext.UserId == -1)
             {
-                if (MessageBox.Show("Для начала авторизуйтесь", "Предупреждение", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (MessageBox.Show("Для начала авторизуйтесь", "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.Yes)
                     MainWindowClass.mainWindow.mainFrame.NavigationService.Navigate(new LoginPage());
             }
 

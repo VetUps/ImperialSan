@@ -120,6 +120,7 @@ namespace ImperialSanWPF.Views.Pages
                             ImageUrl = result.ImageUrl,
                             ProductTitle = result.ProductTitle,
                             ProductQuantity = position.ProductQuantity,
+                            ProductQuantityInStock = result.QuantityInStock,
                             Price = result.Price,
                         });
                     }
