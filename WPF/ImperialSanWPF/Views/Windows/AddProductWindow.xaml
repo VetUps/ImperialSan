@@ -1,0 +1,164 @@
+﻿<Window x:Class="ImperialSanWPF.Views.Windows.AddProductWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImperialSanWPF.Views.Windows"
+        xmlns:conv="clr-namespace:ImperialSanWPF.Utils"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Добавление товара"
+        Height="700"
+        Width="500"
+        MaxWidth="500"
+        Icon="/Resources/Images/logo.png"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <Grid Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Добавление нового товара"
+                           Grid.Row="0"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="#151716"
+                           Margin="0,0,0,20"/>
+
+                <TextBox Grid.Row="1"
+                         Text="{Binding Data.ProductTitle, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Название товара"
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         FontSize="16"
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"
+                         HorizontalScrollBarVisibility="Auto"/>
+
+                <TextBox Grid.Row="2"
+                         Text="{Binding Data.ProductDescription, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Описание (опционально)"
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         FontSize="16"
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         Height="80"/>
+
+                <TextBox Grid.Row="3"
+                         Text="{Binding Data.Price, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:F2}}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Цена (₽)"
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         FontSize="16"
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"/>
+
+                <TextBox Grid.Row="4"
+                         Text="{Binding Data.QuantityInStock, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Количество на складе"
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         FontSize="16"
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"/>
+
+                <TextBox Grid.Row="5"
+                         Text="{Binding Data.ImageUrl, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Ссылка на изображение"
+                         materialDesign:HintAssist.Foreground="#7B7B7B"
+                         materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                         FontSize="16"
+                         Foreground="#7B7B7B"
+                         Margin="0,0,0,10"
+                         HorizontalScrollBarVisibility="Auto"/>
+
+                <!-- Выбор категории -->
+                <ComboBox Grid.Row="6"
+                          ItemsSource="{Binding AvailableCategories}"
+                          SelectedValue="{Binding Data.CategoryId}"
+                          SelectedValuePath="CategoryId"
+                          DisplayMemberPath="FullPath"
+                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                          materialDesign:HintAssist.Hint="Категория"
+                          materialDesign:HintAssist.Foreground="#7B7B7B"
+                          materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                          FontSize="16"
+                          Foreground="#7B7B7B"
+                          Margin="0,0,0,10"/>
+
+                <!-- Выбор бренда -->
+                <ComboBox Grid.Row="7"
+                          ItemsSource="{Binding AvailableBrands}"
+                          Text="{Binding Data.BrandTitle, UpdateSourceTrigger=PropertyChanged}"
+                          IsEditable="True"
+                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                          materialDesign:HintAssist.Hint="Бренд (можно ввести новый)"
+                          materialDesign:HintAssist.Foreground="#7B7B7B"
+                          materialDesign:TextFieldAssist.UnderlineBrush="#FF7028"
+                          FontSize="16"
+                          Foreground="#7B7B7B"
+                          Margin="0,0,0,10"/>
+
+                <!-- Переключатель активности -->
+                <StackPanel Grid.Row="8" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Товар активен"
+                               FontSize="16"
+                               Foreground="#151716"
+                               VerticalAlignment="Center"/>
+                    
+                    <ToggleButton IsChecked="{Binding Data.IsActive}"
+                                  Margin="10,0,0,0"
+                                  VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="9"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,15,0,0">
+                    <Button x:Name="CancelButton"
+                            Content="Отмена"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Foreground="#FF7028"
+                            Height="44"
+                            FontSize="16"
+                            Click="CancelButton_Click"
+                            Margin="0,0,10,0"/>
+
+                    <Button x:Name="SaveButton"
+                            Content="Добавить"
+                            Background="#FF7028"
+                            BorderThickness="0"
+                            Height="44"
+                            FontSize="16"
+                            Click="SaveButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -152,6 +152,19 @@ namespace ImperialSanAPI.Controllers
             }
         }
 
+
+        // Получение всех брендов товаров
+        [HttpGet("get_all_brands")]
+        public ActionResult<List<string>> GetProductBrands()
+        {
+            using (ImperialSanContext context = new ImperialSanContext())
+            {
+                var productBrands = context.Products.Select(p => p.BrandTitle).Distinct().ToList();
+
+                return Ok(productBrands);
+            }
+        }
+
         private List<int> GetAllCategoryIdsIncludingChildren(int rootCategoryId, ImperialSanContext context)
         {
             // Загружаем ВСЕ категории один раз

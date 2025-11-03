@@ -59,5 +59,50 @@ namespace ImperialSanAPI.Controllers
                 });
             }
         }
+
+        // Получение всех категорий с полным путём
+        [HttpGet("get_all_categories_with_path")]
+        public IActionResult GetAllCategoriesWithPath()
+        {
+            using var context = new ImperialSanContext();
+
+            // Загружаем ВСЕ категории один раз
+            var allCategories = context.Categories.ToList();
+
+            // Строим словарь: ID → категория
+            var categoryDict = allCategories.ToDictionary(c => c.CategoryId);
+
+            // Формируем пути
+            var result = allCategories.Select(c => new CategoryPathDTO
+            {
+                CategoryId = c.CategoryId,
+                CategoryTitle = c.CategoryTitle,
+                FullPath = BuildPath(c, categoryDict)
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        private string BuildPath(Category category, Dictionary<int, Category> dict)
+        {
+            var path = new List<string>();
+            var current = category;
+
+            while (current != null)
+            {
+                path.Add(current.CategoryTitle);
+                if (current.ParenCategoryId.HasValue && dict.TryGetValue(current.ParenCategoryId.Value, out var parent))
+                {
+                    current = parent;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            path.Reverse();
+            return string.Join(" → ", path);
+        }
     }
 }

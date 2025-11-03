@@ -198,5 +198,25 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
         </Grid>
+
+        <Grid Grid.Row="2"
+              Grid.Column="2"
+              Margin="15">
+
+            <Button x:Name="addProductButton"
+                    Click="addProductButton_Click"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Foreground="LightGreen"
+                    BorderThickness="1"
+                    BorderBrush="LightGreen"
+                    Padding="15, 0"
+                    Content="+ Товар"
+                    FontSize="20"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
+                    />
+
+        </Grid>
+        
     </Grid>
 </Page>

@@ -1,6 +1,7 @@
 ﻿using ImperialSanWPF.Models;
 using ImperialSanWPF.Utils;
 using ImperialSanWPF.Views.Controllers;
+using ImperialSanWPF.Views.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -402,6 +403,12 @@ namespace ImperialSanWPF.Views.Pages
             CurrentSortItem = sortItem;
 
             UpdateCatalog();
+        }
+
+        private void addProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            new AddProductWindow().ShowDialog();
+            NavigationService.Refresh();
         }
     }
 }
