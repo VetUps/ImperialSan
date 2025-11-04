@@ -16,6 +16,9 @@
     
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:EditModeToTitleConverter x:Key="EditModeToTitleConverter"/>
+        <conv:EditModeToButtonContentConverter x:Key="EditModeToButtonContentConverter"/>
+        <conv:EditModeToVisibilityConverter x:Key="EditModeToVisibilityConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -36,7 +39,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Добавление нового товара"
+                <TextBlock Text="{Binding IsEditMode, 
+                                  Converter={StaticResource EditModeToTitleConverter}}"
                            Grid.Row="0"
                            FontSize="24"
                            FontWeight="Bold"
@@ -125,8 +129,12 @@
                           Foreground="#7B7B7B"
                           Margin="0,0,0,10"/>
 
-                <!-- Переключатель активности -->
-                <StackPanel Grid.Row="8" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Grid.Row="8" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center"
+                            Visibility="{Binding IsEditMode,
+                                         Converter={StaticResource EditModeToVisibilityConverter}}">
+                    
                     <TextBlock Text="Товар активен"
                                FontSize="16"
                                Foreground="#151716"
@@ -154,7 +162,8 @@
                             Margin="0,0,10,0"/>
 
                     <Button x:Name="SaveButton"
-                            Content="Добавить"
+                            Content="{Binding IsEditMode, 
+                                      Converter={StaticResource EditModeToButtonContentConverter}}"
                             Background="#FF7028"
                             BorderThickness="0"
                             Height="44"

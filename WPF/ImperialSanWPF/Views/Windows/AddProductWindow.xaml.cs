@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,7 @@ namespace ImperialSanWPF.Views.Windows
         private ObservableCollection<Category> _availableCategories;
         private ObservableCollection<string> _availableBrands;
 
+        public bool IsEditMode { get; private set; }
         public AddProduct Data { get; private set; }
         public ObservableCollection<Category> AvailableCategories 
         {
@@ -72,7 +74,28 @@ namespace ImperialSanWPF.Views.Windows
             InitializeComponent();
 
             Data = new AddProduct();
-            LoadDataAsync();
+            _ = LoadDataAsync();
+            DataContext = this;
+        }
+
+        public AddProductWindow(ProductForEdit product)
+        {
+            InitializeComponent();
+
+            IsEditMode = true;
+            Data = new AddProduct
+            {
+                ProductId = product.ProductId,
+                ProductTitle = product.ProductTitle,
+                ProductDescription = product.ProductDescription,
+                Price = product.Price,
+                QuantityInStock = product.QuantityInStock,
+                ImageUrl = product.ImageUrl,
+                CategoryId = product.CategoryId,
+                BrandTitle = product.BrandTitle
+            };
+
+            _ = LoadDataAsync();
             DataContext = this;
         }
 
@@ -104,11 +127,21 @@ namespace ImperialSanWPF.Views.Windows
         {
             try
             {
-                using var response = await BaseHttpClient.httpClient.PostAsJsonAsync("Product/add_product", Data);
+                HttpResponseMessage response;
+                if (IsEditMode)
+                {
+                    response = await BaseHttpClient.httpClient.PutAsJsonAsync("Product/update_product", Data);
+                }
+                else
+                {
+                    response = await BaseHttpClient.httpClient.PostAsJsonAsync("Product/add_product", Data);
+                }
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show("Товар успешно добавлен!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    string message = IsEditMode ? "Товар успешно отредактирован!" : "Товар успешно добавлен!";
+
+                    MessageBox.Show(message, "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                     DialogResult = true;
                     Close();
                 }

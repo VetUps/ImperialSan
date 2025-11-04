@@ -13,7 +13,7 @@ namespace ImperialSanAPI.DTOs.ProductDTO
         public string? ProductDescription { get; set; }
 
         [Required(ErrorMessage = "Цену нельзя убрать")]
-        [Range(0, float.MaxValue, ErrorMessage = "Введите корректную цену")]
+        [Range(100, float.MaxValue, ErrorMessage = "Введите корректную цену (минимум 100 р.)")]
         public float Price { get; set; }
 
         [Required(ErrorMessage = "Количество товара на складе должно быть указано")]

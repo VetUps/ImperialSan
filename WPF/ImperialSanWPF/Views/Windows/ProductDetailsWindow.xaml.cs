@@ -58,7 +58,8 @@ namespace ImperialSanWPF.Views.Windows
             else
             {
                 Button clickedButton = sender as Button;
-                Product product = clickedButton.DataContext as Product;
+                ProductDetailsWindow buttonContext = clickedButton.DataContext as ProductDetailsWindow;
+                Product product = buttonContext.MainProduct;
                 AddProductToBasket(product);
             }
 

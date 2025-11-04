@@ -315,6 +315,9 @@ namespace ImperialSanAPI.Controllers
                     });
                 }
 
+                List<Product> sameBrandProducts = context.Products.Where(p => p.BrandTitle == updateProductDto.BrandTitle && p.ProductId != updateProductDto.ProductId).ToList();
+                bool isAnyElemntsWithSameName = sameBrandProducts.Any(sbp => sbp.ProductTitle == updateProductDto.ProductTitle);
+
                 if (context.Products.Where(p => p.BrandTitle == updateProductDto.BrandTitle && p.ProductId != updateProductDto.ProductId)
                                     .Any(u => u.ProductTitle == updateProductDto.ProductTitle))
                 {

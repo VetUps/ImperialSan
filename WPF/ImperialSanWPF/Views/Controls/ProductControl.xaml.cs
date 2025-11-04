@@ -1,5 +1,6 @@
 ﻿using ImperialSanWPF.Models;
 using ImperialSanWPF.Utils;
+using ImperialSanWPF.Views.Pages;
 using ImperialSanWPF.Views.Windows;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace ImperialSanWPF.Views.Controllers
 {
@@ -68,6 +70,23 @@ namespace ImperialSanWPF.Views.Controllers
             }
 
             DataContext = this;
+        }
+
+        private void redactButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProductForEdit productForEdit = new ProductForEdit()
+            {
+                ProductId = MainProduct.ProductId,
+                ProductTitle = MainProduct.ProductTitle,
+                ProductDescription = MainProduct.ProductDescription,
+                Price = MainProduct.Price,
+                QuantityInStock = MainProduct.QuantityInStock,
+                ImageUrl = MainProduct.ImageUrl,
+                CategoryId = MainProduct.CategoryId,
+                BrandTitle = MainProduct.BrandTitle,
+            };
+            new AddProductWindow(productForEdit).ShowDialog();
+            MainWindowClass.mainWindow.mainFrame.Navigate(new CatalogPage());
         }
     }
 }
