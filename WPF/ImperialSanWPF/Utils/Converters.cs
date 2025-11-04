@@ -1,6 +1,7 @@
 ﻿using ImperialSanWPF.Models;
 using MaterialDesignThemes.Wpf;
 using System.Globalization;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -125,6 +126,11 @@ namespace ImperialSanWPF.Utils
     {
         public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
         {
+            bool invert = parametr?.ToString() == "Invert";
+
+            if (invert)
+                return (string)value == "Admin" ? Visibility.Collapsed : Visibility.Visible;
+
             return (string)value == "Admin" ? Visibility.Visible : Visibility.Collapsed;
         }
 

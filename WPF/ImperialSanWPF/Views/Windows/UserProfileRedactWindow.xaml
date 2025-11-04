@@ -111,6 +111,8 @@
                         <TextBlock Text="{Binding Data.DeliveryAddress, StringFormat={}Адрес доставки: {0}}"
                                    Margin="0, 10, 0, 0"
                                    HorizontalAlignment="Left"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="400"
                                    FontSize="15"
                                    Foreground="#151716"/>
                     </StackPanel>

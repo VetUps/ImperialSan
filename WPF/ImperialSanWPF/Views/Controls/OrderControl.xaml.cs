@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -27,8 +28,23 @@ namespace ImperialSanWPF.Views.Controls
     /// </summary>
     public partial class OrderControl : UserControl
     {
+        #region Свойства
+        public string UserRole { get; set; } = SessionContext.Role;
+        public OrderForProfile MainOrder { get; set; }
+        public List<string> OrderStatuses { get; } = new()
+        {
+            "В обработке",
+            "Собирается",
+            "Собран",
+            "В пути",
+            "Доставлен",
+            "Отменён"
+        };
+        #endregion
         public OrderControl()
         {
+            MainOrder = new OrderForProfile();
+
             InitializeComponent();
         }
 
@@ -101,6 +117,45 @@ namespace ImperialSanWPF.Views.Controls
             {
                 MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
+        }
+
+        private async void orderStatusesComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var abortOrderModel = new
+                {
+                    orderId = MainOrder.OrderId,
+                    newOrderStatus = MainOrder.OrderStatus
+                };
+
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.PutAsJsonAsync("Order/change_status", abortOrderModel);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    //MainWindowClass.mainWindow.mainFrame.Navigate(new UserProfilePage());
+                }
+                else
+                {
+                    string error = await ResponseErrorHandler.ProcessErrors(response);
+                    MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    e.Handled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
+            }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is OrderForProfile order)
+            {
+                MainOrder = order;
+            }
+
+            DataContext = this;
         }
     }
 }

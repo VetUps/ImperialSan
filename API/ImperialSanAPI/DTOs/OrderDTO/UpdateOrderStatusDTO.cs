@@ -6,7 +6,7 @@ namespace ImperialSanAPI.DTOs.OrderDTO
     {
         public int OrderId { get; set; }
         [Required(ErrorMessage = "Не указан новый статус заказа")]
-        [AllowedValuesAttribute("В обработке", "Собиарется", "Собран", "В пути", "Доставлен", "Отменён")]
+        [AllowedValuesAttribute("В обработке", "Собирается", "Собран", "В пути", "Доставлен", "Отменён")]
         public string NewOrderStatus { get; set; }
     }
 }

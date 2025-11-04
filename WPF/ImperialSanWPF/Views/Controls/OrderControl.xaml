@@ -5,10 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:conv="clr-namespace:ImperialSanWPF.Utils" 
              xmlns:local="clr-namespace:ImperialSanWPF.Views.Controls"
-             mc:Ignorable="d">
+             mc:Ignorable="d"
+             Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
         <conv:OrderStatusToEnableStateConverter x:Key="OrderStatusToEnableStateConverter"/>
+        <conv:RoleVisibilityConverter x:Key="RoleVisibilityConverter"/>
     </UserControl.Resources>
     
         <Grid>
@@ -21,12 +23,12 @@
                 <ColumnDefinition Width="110"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{Binding DateOfCreate, StringFormat=dd.MM.yyyy}" 
+            <TextBlock Text="{Binding MainOrder.DateOfCreate, StringFormat=dd.MM.yyyy}" 
                        Grid.Column="0"
                        FontSize="15"
                        Foreground="#7B7B7B"
                        VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding OrderId, StringFormat={}№ {0}}" 
+            <TextBlock Text="{Binding MainOrder.OrderId, StringFormat={}№ {0}}" 
                        Grid.Column="1"
                        FontSize="15"
                        Foreground="#FF5B00"
@@ -34,7 +36,7 @@
                        VerticalAlignment="Center"
                        PreviewMouseLeftButtonDown="GetReceipt_PreviewMouseLeftButtonDown"/>
 
-            <ItemsControl ItemsSource="{Binding Positions}" 
+            <ItemsControl ItemsSource="{Binding MainOrder.Positions}" 
                           Grid.Column="2"
                           VerticalAlignment="Center">
                 <ItemsControl.ItemsPanel>
@@ -54,12 +56,12 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <TextBlock Text="{Binding OrderStatus}" 
+            <TextBlock Text="{Binding MainOrder.OrderStatus}" 
                        Grid.Column="3"
                        FontSize="15"
                        Foreground="#151716"
                        VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding Price, StringFormat={}{0:N2} ₽}" 
+            <TextBlock Text="{Binding MainOrder.Price, StringFormat={}{0:N2} ₽}" 
                        Grid.Column="4" 
                        FontSize="15"
                        Foreground="#151716"
@@ -68,8 +70,11 @@
 
             <Button x:Name="abortOrderButton" 
                     Click="abortOrderButton_Click"
-                    IsEnabled="{Binding OrderStatus, 
+                    IsEnabled="{Binding MainOrder.OrderStatus, 
                                 Converter={StaticResource OrderStatusToEnableStateConverter}}"
+                    Visibility="{Binding UserRole, 
+                                 Converter={StaticResource RoleVisibilityConverter}, 
+                                 ConverterParameter=Invert}"
                     Grid.Column="5"
                     Content="Отменить"
                     HorizontalAlignment="Center"
@@ -78,5 +83,16 @@
                     FontSize="15" 
                     FontWeight="Bold" 
                     Cursor="Hand"/>
+
+        <ComboBox x:Name="orderStatusesComboBox"
+                  SelectionChanged="orderStatusesComboBox_SelectionChanged"
+                  ItemsSource="{Binding OrderStatuses}"
+                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                  Visibility="{Binding UserRole, 
+                               Converter={StaticResource RoleVisibilityConverter}}"
+                  SelectedItem="{Binding MainOrder.OrderStatus}"
+                  Grid.Column="5"
+                  FontSize="15"
+                  Foreground="#151716"/>
     </Grid>
 </UserControl>

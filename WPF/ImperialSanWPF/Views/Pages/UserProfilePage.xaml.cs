@@ -37,6 +37,8 @@ namespace ImperialSanWPF.Views.Pages
         #endregion
 
         #region Свойства
+        public string UserRole { get; set; } = SessionContext.Role;
+
         public ObservableCollection<OrderForProfile> UserOrders
         {
             get => _userOrders;
