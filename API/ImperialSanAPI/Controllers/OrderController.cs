@@ -186,6 +186,11 @@ namespace ImperialSanAPI.Controllers
                                 throw new Exception($"Максимум можно заказать {product.QuantityInStock} шт. товара #{product.ProductId} {product.ProductTitle}");
                             }
 
+                            else if ((bool)!product.IsActive)
+                            {
+                                throw new Exception($"Товар #{product.ProductId} {product.ProductTitle} больше недоступен в нашем магазине.\nУдалите его из корзины, чтобы совершить заказ");
+                            }
+
                             var newOrderPosition = new OrderPosition
                             {
                                 OrderId = newOrder.OrderId,
