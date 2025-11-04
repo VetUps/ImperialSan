@@ -93,13 +93,13 @@ namespace ImperialSanWPF.Views.Pages
             _productBasketPositions = new ObservableCollection<ProductBasketPosition>();
             _productBasketPositions.CollectionChanged += OnCollectionChanged;
 
-            InitializeProductBasketPositions();
+            _ = InitializeProductBasketPositionsAsync();
 
             InitializeComponent();
             DataContext = this;
         }
 
-        private async Task InitializeProductBasketPositions()
+        private async Task InitializeProductBasketPositionsAsync()
         {
             Basket currentBasket = SessionContext.UserBasket;
             

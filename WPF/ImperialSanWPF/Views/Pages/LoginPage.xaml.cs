@@ -28,7 +28,12 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class LoginPage : Page, INotifyPropertyChanged
     {
+        #region Поля
         private string _password = "";
+        private bool _isPasswordVisible = false;
+        #endregion
+
+        #region Свойства
         public string Password
         {
             get => _password;
@@ -39,7 +44,6 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
 
-        private bool _isPasswordVisible = false;
         public bool IsPasswordVisible
         {
             get => _isPasswordVisible;
@@ -49,13 +53,16 @@ namespace ImperialSanWPF.Views.Pages
                 OnPropertyChanged();
             }
         }
+        #endregion
 
+        #region Реализация интерфейса INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
         public LoginPage()
         {
@@ -89,7 +96,7 @@ namespace ImperialSanWPF.Views.Pages
                     SessionContext.Role = jsonResponse.Role;
                     OnLoginSuccess();
 
-                    LoadBasket();
+                    await LoadBasketAsync();
                 }
                 else
                 {
@@ -103,7 +110,7 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
 
-        private async Task LoadBasket()
+        private async Task LoadBasketAsync()
         {
             try
             {

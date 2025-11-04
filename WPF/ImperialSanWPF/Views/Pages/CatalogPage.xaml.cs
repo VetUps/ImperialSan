@@ -208,11 +208,11 @@ namespace ImperialSanWPF.Views.Pages
         {
             Loaded -= CatalogPage_Loaded;
 
-            await UpdateCategories();
-            await UpdateCatalog();
+            await UpdateCategoriesAsync();
+            await UpdateCatalogAsync();
         }
 
-        private async Task UpdateCatalog()
+        private async Task UpdateCatalogAsync()
         {
             bool onlyActiveProuducts = SessionContext.Role == "Admin" ? false : true;
             string url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategory.CategoryId}&sortBy={CurrentSortItem.SortText}&sortOrder={CurrentSortItem.SortOrder}&onlyActive={onlyActiveProuducts}";
@@ -240,7 +240,7 @@ namespace ImperialSanWPF.Views.Pages
             }
         }
 
-        private async Task UpdateCategories()
+        private async Task UpdateCategoriesAsync()
         {
             string url = $"Category?categoryId={CurrentCategory.CategoryId}";
 
@@ -257,7 +257,7 @@ namespace ImperialSanWPF.Views.Pages
                         AvailableCategories.Add(categoty);
 
                     PageNumber = 1;
-                    await UpdateCatalog();
+                    await UpdateCatalogAsync();
                 }
                 else
                 {
@@ -360,7 +360,7 @@ namespace ImperialSanWPF.Views.Pages
             CurrentCategory.CategoryId = (int)button.CommandParameter;
             CurrentCategory.CategoryTitle = (string?)button.Content;
 
-            await UpdateCategories();
+            await UpdateCategoriesAsync();
             UpdateCategoriesHistory();
         }
 
@@ -370,7 +370,7 @@ namespace ImperialSanWPF.Views.Pages
             CurrentCategory.CategoryId = button.CommandParameter == null ? null:(int)button.CommandParameter;
             CurrentCategory.CategoryTitle= (string?)button.Content;
 
-            await UpdateCategories();
+            await UpdateCategoriesAsync();
             UpdateCategoriesHistory();
         }
 
@@ -395,7 +395,7 @@ namespace ImperialSanWPF.Views.Pages
                     return;
                 }
 
-                await UpdateCatalog();
+                await UpdateCatalogAsync();
             }
         }
         #endregion
@@ -405,7 +405,7 @@ namespace ImperialSanWPF.Views.Pages
             SortItem sortItem = sortComboBox.SelectedItem as SortItem;
             CurrentSortItem = sortItem;
 
-            UpdateCatalog();
+            await UpdateCatalogAsync();
         }
 
         private void addProductButton_Click(object sender, RoutedEventArgs e)

@@ -27,9 +27,12 @@ namespace ImperialSanWPF.Views.Windows
     /// </summary>
     public partial class AddProductWindow : Window, INotifyPropertyChanged
     {
+        #region Поля
         private ObservableCollection<Category> _availableCategories;
         private ObservableCollection<string> _availableBrands;
+        #endregion
 
+        #region Свойства
         public bool IsEditMode { get; private set; }
         public AddProduct Data { get; private set; }
         public ObservableCollection<Category> AvailableCategories 
@@ -46,7 +49,6 @@ namespace ImperialSanWPF.Views.Windows
             }
 
         }
-
         public ObservableCollection<string> AvailableBrands
         {
             get => _availableBrands;
@@ -61,16 +63,22 @@ namespace ImperialSanWPF.Views.Windows
             }
 
         }
+        #endregion
 
+        #region Реализация интрефейса INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
         public AddProductWindow()
         {
+            _availableCategories = new ObservableCollection<Category>();
+            _availableBrands = new ObservableCollection<string>();
+
             InitializeComponent();
 
             Data = new AddProduct();
@@ -80,6 +88,9 @@ namespace ImperialSanWPF.Views.Windows
 
         public AddProductWindow(ProductForEdit product)
         {
+            _availableCategories = new ObservableCollection<Category>();
+            _availableBrands = new ObservableCollection<string>();
+
             InitializeComponent();
 
             IsEditMode = true;

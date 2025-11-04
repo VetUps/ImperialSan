@@ -27,11 +27,16 @@ namespace ImperialSanWPF.Views.Windows
     /// </summary>
     public partial class UserProfileRedactWindow : Window, INotifyPropertyChanged
     {
+        #region Поля
+        private string _password = "";
+        private bool _isPasswordVisible = false;
+        #endregion
+
+        #region Свойства
         public UpdateUserData Data { get; private set; }
         public event Action? Saved;
         public event Action? Canceled;
 
-        private string _password = "";
         public string Password
         {
             get => _password;
@@ -41,7 +46,6 @@ namespace ImperialSanWPF.Views.Windows
             }
         }
 
-        private bool _isPasswordVisible = false;
         public bool IsPasswordVisible
         {
             get => _isPasswordVisible;
@@ -50,13 +54,16 @@ namespace ImperialSanWPF.Views.Windows
                 _isPasswordVisible = value; OnPropertyChanged();
             }
         }
+        #endregion
 
+        #region Реализация интерфейса INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
 
         public UserProfileRedactWindow(UserData userData)
         {

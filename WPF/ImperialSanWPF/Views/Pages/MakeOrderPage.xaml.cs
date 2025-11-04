@@ -18,10 +18,14 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class MakeOrderPage : Page
     {
+        #region Поля
+        private List<ProductBasketPosition> _basketPositionsForOrder;
+        #endregion
+
+        #region Свойства
         public float TotalPirce {  get; private set; }
         public Order CurrentOrder { get; private set; } = new Order();
 
-        private List<ProductBasketPosition> _basketPositionsForOrder;
 
         public List<ProductBasketPosition> BasketpositionsForOrder
         {
@@ -33,14 +37,17 @@ namespace ImperialSanWPF.Views.Pages
                     _basketPositionsForOrder = value;
             }
         }
+        #endregion
 
         public MakeOrderPage(float price, List<ProductBasketPosition> positions)
         {
+            _basketPositionsForOrder = new List<ProductBasketPosition>();
+
             InitializeComponent();
 
             TotalPirce = price;
             BasketpositionsForOrder = positions;
-            GetDefaultUserDeliveryAddressAsync();
+            _ = GetDefaultUserDeliveryAddressAsync();
 
             DataContext = this;
 
@@ -172,6 +179,6 @@ namespace ImperialSanWPF.Views.Pages
     public class WebMessage
     {
         public string? type { get; set; }
-        public string address { get; set; }
+        public string? address { get; set; }
     }
 }

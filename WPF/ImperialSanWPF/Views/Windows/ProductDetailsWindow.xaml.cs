@@ -27,8 +27,11 @@ namespace ImperialSanWPF.Views.Windows
     /// </summary>
     public partial class ProductDetailsWindow : Window
     {
+        #region Поля
         private Product _mainProduct { get; set; }
+        #endregion
 
+        #region Свойства
         public Product MainProduct
         {
             get => _mainProduct;
@@ -39,10 +42,14 @@ namespace ImperialSanWPF.Views.Windows
                     _mainProduct = value;
             }
         }
+        #endregion
 
         public ProductDetailsWindow(Product product)
         {
+            _mainProduct = new Product();
+
             InitializeComponent();
+
             MainProduct = product;
             DataContext = this;
         }

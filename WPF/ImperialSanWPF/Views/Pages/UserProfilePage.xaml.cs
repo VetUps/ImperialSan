@@ -29,9 +29,14 @@ namespace ImperialSanWPF.Views.Pages
     /// </summary>
     public partial class UserProfilePage : Page, INotifyPropertyChanged
     {
+        #region Поля
         private ObservableCollection<OrderForProfile> _userOrders;
+        private ObservableCollection<OrderForProfile> _allOrders;
         private UserData _user;
+        private string _currentTab = "Мои заказы";
+        #endregion
 
+        #region Свойства
         public ObservableCollection<OrderForProfile> UserOrders
         {
             get => _userOrders;
@@ -41,6 +46,34 @@ namespace ImperialSanWPF.Views.Pages
                 if (value != _userOrders)
                 {
                     _userOrders = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<OrderForProfile> AllOrders
+        {
+            get => _allOrders;
+
+            set
+            {
+                if (value != _allOrders)
+                {
+                    _allOrders = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string CurrentTab
+        {
+            get => _currentTab;
+
+            set
+            {
+                if (value != _currentTab)
+                {
+                    _currentTab = value;
                     OnPropertyChanged();
                 }
             }
@@ -59,6 +92,8 @@ namespace ImperialSanWPF.Views.Pages
                 }
             }
         }
+        #endregion
+
         #region Реализация интерфейса INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -70,10 +105,16 @@ namespace ImperialSanWPF.Views.Pages
 
         public UserProfilePage()
         {
+            _userOrders = new ObservableCollection<OrderForProfile>();
+            _allOrders = new ObservableCollection<OrderForProfile>();
+            _user = new UserData();
+
             InitializeComponent();
 
-            GetUserDataAsync();
-            GetUserOrdersAsync();
+            _ = GetUserDataAsync();
+            _ = GetUserOrdersAsync();
+
+            DataContext = this;
         }
 
         private async Task GetUserDataAsync()
@@ -108,15 +149,17 @@ namespace ImperialSanWPF.Views.Pages
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadFromJsonAsync<ObservableCollection<OrderForProfile>>();
-                    UserOrders = jsonResponse;
+                    ObservableCollection<OrderForProfile> newUserOrders = jsonResponse;
 
-                    foreach (var order in UserOrders)
+                    foreach (var order in newUserOrders)
                     {
                         foreach (var position in order.Positions)
                         {
                             position.ImageUrl = await GetProductImageUrlAsync((int)position.ProductId);
                         }
                     }
+
+                    UserOrders = newUserOrders;
                 }
                 else
                 {
@@ -128,8 +171,39 @@ namespace ImperialSanWPF.Views.Pages
             {
                 MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
             }
+        }
 
-            DataContext = this;
+        private async Task GetAllOrdersAsync()
+        {
+            try
+            {
+                using HttpResponseMessage response = await BaseHttpClient.httpClient.GetAsync($"Order/get_all_orders");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonResponse = await response.Content.ReadFromJsonAsync<ObservableCollection<OrderForProfile>>();
+                    ObservableCollection<OrderForProfile> newUserOrders = jsonResponse;
+
+                    foreach (var order in newUserOrders)
+                    {
+                        foreach (var position in order.Positions)
+                        {
+                            position.ImageUrl = await GetProductImageUrlAsync((int)position.ProductId);
+                        }
+                    }
+
+                    AllOrders = newUserOrders;
+                }
+                else
+                {
+                    string error = await ResponseErrorHandler.ProcessErrors(response);
+                    MessageBox.Show(error, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Возникла непредвиденная ошибка: {ex.Message}");
+            }
         }
 
         private async Task<string> GetProductImageUrlAsync(int productId)
@@ -170,6 +244,22 @@ namespace ImperialSanWPF.Views.Pages
             window.Canceled += window.Close;
 
             window.ShowDialog();
+        }
+
+        private void myOrdersTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            string content = (sender as Button).Content.ToString();
+            CurrentTab = content;
+
+            _ = GetUserOrdersAsync();
+        }
+
+        private void allOrdersTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            string content = (sender as Button).Content.ToString();
+            CurrentTab = content;
+
+            _ = GetAllOrdersAsync();
         }
     }
 }

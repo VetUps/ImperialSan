@@ -19,11 +19,15 @@ namespace ImperialSanWPF.Views.Controllers
     /// </summary>
     public partial class ProductControl : UserControl
     {
+        #region Свойства
         public string UserRole { get; set; } = SessionContext.Role;
         public Product MainProduct { get; set; }
+        #endregion
 
         public ProductControl()
         {
+            MainProduct = new Product();
+
             InitializeComponent();
         }
 
@@ -85,6 +89,7 @@ namespace ImperialSanWPF.Views.Controllers
                 CategoryId = MainProduct.CategoryId,
                 BrandTitle = MainProduct.BrandTitle,
             };
+
             new AddProductWindow(productForEdit).ShowDialog();
             MainWindowClass.mainWindow.mainFrame.Navigate(new CatalogPage());
         }

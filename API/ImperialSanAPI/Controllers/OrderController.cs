@@ -14,7 +14,7 @@ namespace ImperialSanAPI.Controllers
     {
         // Получить заказы пользователя
         [HttpGet("{userId}")]
-        public ActionResult<List<OrderDTO>> GetOrders(int userId)
+        public ActionResult<List<OrderDTO>> GetUserOrders(int userId)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
@@ -23,6 +23,44 @@ namespace ImperialSanAPI.Controllers
                 var orders = context.Orders
                                     .Include(o => o.OrderPositions)
                                     .Where(o => o.UserId == userId)
+                                    .ToList();
+
+
+                foreach (Order order in orders)
+                {
+                    ordersDTO.Add(new OrderDTO
+                    {
+                        OrderId = order.OrderId,
+                        DateOfCreate = order.DateOfCreate,
+                        OrderStatus = order.OrderStatus,
+                        DiliveryAddres = order.DiliveryAddres,
+                        PaymentMethod = order.PaymentMethod,
+                        Price = order.Price,
+                        UserComment = order.UserComment,
+                        Positions = order.OrderPositions.Select(op => new OrderPositionDTO
+                        {
+                            OrderPositionId = op.OrderPositionId,
+                            ProductId = op.ProductId,
+                            ProductQuantity = op.ProductQuantity,
+                            ProductPriceInMoment = op.ProductPriceInMoment,
+                        }).ToList()
+                    });
+                }
+
+                return Ok(ordersDTO);
+            }
+        }
+
+        // Получить все заказы
+        [HttpGet("get_all_orders")]
+        public ActionResult<List<OrderDTO>> GetAllOrders()
+        {
+            using (ImperialSanContext context = new ImperialSanContext())
+            {
+                List<OrderDTO> ordersDTO = new List<OrderDTO>();
+
+                var orders = context.Orders
+                                    .Include(o => o.OrderPositions)
                                     .ToList();
 
 
