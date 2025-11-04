@@ -120,4 +120,15 @@ namespace ImperialSanWPF.Utils
             throw new NotImplementedException();
         }
     }
+
+    public class RoleVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
+        {
+            return (string)value == "Admin" ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
 }

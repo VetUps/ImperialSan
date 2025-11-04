@@ -46,6 +46,8 @@ namespace ImperialSanWPF.Views.Pages
         #endregion
 
         #region Свойства
+        public string UserRole { get; set; } = SessionContext.Role;
+
         public int PageSize
         {
             get => _pageSize;
@@ -408,7 +410,7 @@ namespace ImperialSanWPF.Views.Pages
         private void addProductButton_Click(object sender, RoutedEventArgs e)
         {
             new AddProductWindow().ShowDialog();
-            NavigationService.Refresh();
+            NavigationService.Navigate(new CatalogPage());
         }
     }
 }

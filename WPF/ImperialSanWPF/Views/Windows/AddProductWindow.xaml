@@ -131,7 +131,7 @@
                                FontSize="16"
                                Foreground="#151716"
                                VerticalAlignment="Center"/>
-                    
+
                     <ToggleButton IsChecked="{Binding Data.IsActive}"
                                   Margin="10,0,0,0"
                                   VerticalAlignment="Center"/>

@@ -98,7 +98,11 @@ namespace ImperialSanAPI.Controllers
                         },
                     });
 
-                return Ok(user.UserId);
+                return Ok(new
+                {
+                    UserId = user.UserId,
+                    Role = user.Role
+                });
             }
         }
 

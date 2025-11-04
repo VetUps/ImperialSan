@@ -14,6 +14,7 @@
         <conv:CurrentPageBackgroundConverter x:Key="CurrentPageBackgroundConverter"/>
         <conv:CurrentPageFontWeightConverter x:Key="CurrentPageFontWeightConverter"/>
         <conv:EmptyCollectionConverter x:Key="EmptyCatalogVisivilityConverter"/>
+        <conv:RoleVisibilityConverter x:Key="RoleVisibilityConverter"/>
     </Page.Resources>
 
     <Grid ShowGridLines="True">
@@ -199,24 +200,32 @@
                        VerticalAlignment="Center"/>
         </Grid>
 
-        <Grid Grid.Row="2"
-              Grid.Column="2"
-              Margin="15">
+        <Border Grid.Row="2"
+                Grid.Column="2"
+                Margin="10"
+                BorderThickness="1"
+                BorderBrush="#656B72"
+                CornerRadius="4"
+                Visibility="{Binding UserRole, 
+                             Converter={StaticResource RoleVisibilityConverter}}">
 
-            <Button x:Name="addProductButton"
-                    Click="addProductButton_Click"
-                    Style="{StaticResource MaterialDesignFlatButton}"
-                    Foreground="LightGreen"
-                    BorderThickness="1"
-                    BorderBrush="LightGreen"
-                    Padding="15, 0"
-                    Content="+ Товар"
-                    FontSize="20"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Center"
-                    />
+            <Grid Margin="5">
 
-        </Grid>
+                <Button x:Name="addProductButton"
+                        Click="addProductButton_Click"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Foreground="LightGreen"
+                        BorderThickness="1"
+                        BorderBrush="LightGreen"
+                        Padding="15, 0"
+                        Content="+ Товар"
+                        FontSize="20"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        />
+
+            </Grid>
+        </Border>
         
     </Grid>
 </Page>

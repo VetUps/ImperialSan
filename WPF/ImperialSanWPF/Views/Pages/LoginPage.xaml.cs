@@ -84,8 +84,9 @@ namespace ImperialSanWPF.Views.Pages
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    SessionContext.UserId = Convert.ToInt32(jsonResponse);
+                    UserLoginAnswer jsonResponse = await response.Content.ReadFromJsonAsync<UserLoginAnswer>();
+                    SessionContext.UserId = jsonResponse.UserId;
+                    SessionContext.Role = jsonResponse.Role;
                     OnLoginSuccess();
 
                     LoadBasket();
