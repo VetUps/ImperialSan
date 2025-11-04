@@ -17,7 +17,7 @@
         <conv:RoleVisibilityConverter x:Key="RoleVisibilityConverter"/>
     </Page.Resources>
 
-    <Grid ShowGridLines="True">
+    <Grid ShowGridLines="False">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60*"/>
             <ColumnDefinition Width="600*"/>
@@ -103,7 +103,7 @@
 
         <Grid Grid.Row="2"
               Grid.Column="1"
-              ShowGridLines="True">
+              ShowGridLines="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="175*"/>
                 <ColumnDefinition Width="500*"/>
@@ -112,6 +112,16 @@
                 <RowDefinition Height="300*"/>
                 <RowDefinition Height="45*"/>
             </Grid.RowDefinitions>
+
+            <Border BorderThickness="1"
+                    BorderBrush="#FE5B00"
+                    CornerRadius="4">
+                <Grid Margin="10">
+                    <TextBlock Text="ImperialSan — это надёжный поставщик качественной сантехники для дома, квартиры и коммерческих объектов. Мы предлагаем широкий ассортимент продукции от ведущих российских и мировых производителей: смесители, душевые системы, раковины, унитазы, ванны, инсталляции, арматура и комплектующие — всё в одном месте."
+                               TextWrapping="Wrap"
+                               FontSize="18"/>
+                </Grid>
+            </Border>
 
             <ScrollViewer Grid.Row="0"
                           Grid.Column="1"
