@@ -115,6 +115,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="120"/>
                                 <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="110"/>
                             </Grid.ColumnDefinitions>
 
                             <Grid.Resources>
@@ -129,6 +130,7 @@
                             <TextBlock Text="Товары" Grid.Column="2"/>
                             <TextBlock Text="Статус" Grid.Column="3"/>
                             <TextBlock Text="Итого" Grid.Column="4"/>
+                            <TextBlock Text="Действия" Grid.Column="5"/>
                         </Grid>
                         
                         <ScrollViewer VerticalScrollBarVisibility="Auto" 
