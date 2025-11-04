@@ -214,7 +214,8 @@ namespace ImperialSanWPF.Views.Pages
 
         private async Task UpdateCatalog()
         {
-            string url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategory.CategoryId}&sortBy={CurrentSortItem.SortText}&sortOrder={CurrentSortItem.SortOrder}";
+            bool onlyActiveProuducts = SessionContext.Role == "Admin" ? false : true;
+            string url = $"Product?pageNumber={PageNumber}&pageSize={PageSize}&categoryId={CurrentCategory.CategoryId}&sortBy={CurrentSortItem.SortText}&sortOrder={CurrentSortItem.SortOrder}&onlyActive={onlyActiveProuducts}";
 
             try
             {

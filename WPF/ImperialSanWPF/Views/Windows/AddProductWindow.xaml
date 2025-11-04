@@ -133,6 +133,9 @@
                                VerticalAlignment="Center"/>
 
                     <ToggleButton IsChecked="{Binding Data.IsActive}"
+                                  Style="{StaticResource MaterialDesignActionLightToggleButton}"
+                                  Background="#FF7028"
+                                  Foreground="White"
                                   Margin="10,0,0,0"
                                   VerticalAlignment="Center"/>
                 </StackPanel>

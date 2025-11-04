@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,7 +44,7 @@ namespace ImperialSanWPF.Views.Windows
         {
             InitializeComponent();
             MainProduct = product;
-            DataContext = MainProduct;
+            DataContext = this;
         }
 
         private void addToBasketButton_Click(object sender, RoutedEventArgs e)

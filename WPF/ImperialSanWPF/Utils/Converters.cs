@@ -131,4 +131,15 @@ namespace ImperialSanWPF.Utils
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             => throw new NotImplementedException();
     }
+
+    public class RoleEnableStateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parametr, CultureInfo culture)
+        {
+            return (string)value == "Admin" ? true : false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotImplementedException();
+    }
 }

@@ -22,7 +22,8 @@ namespace ImperialSanAPI.Controllers
             int pageSize, 
             int? categoryId = null,
             string? sortBy = null,
-            string? sortOrder = "asc")
+            string? sortOrder = "asc",
+            bool onlyActive = true)
         {
 
             var validSortFields = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -90,6 +91,9 @@ namespace ImperialSanAPI.Controllers
                 }
 
                 var products = context.Products.Include(p => p.Category).ToList();
+
+                if (onlyActive)
+                    products = products.Where(p => p.IsActive == true).ToList();
 
                 if (categoryId != null)
                 {
@@ -353,12 +357,12 @@ namespace ImperialSanAPI.Controllers
         }
 
         // Удаление (изменение статуса) товара
-        [HttpDelete("delete_product")]
-        public IActionResult DeleteProduct([FromBody] DeleteProductDTO deleteProductDto)
+        [HttpPost("change_product_status")]
+        public IActionResult DeleteProduct([FromBody] ChangeStatusProductDTO changeStatusProductDto)
         {
             using (ImperialSanContext context = new ImperialSanContext())
             {
-                var product = context.Products.Find(deleteProductDto.ProductId);
+                var product = context.Products.Find(changeStatusProductDto.ProductId);
                 if (product == null)
                 {
                     return NotFound(new UsualProblemDetails
@@ -372,7 +376,7 @@ namespace ImperialSanAPI.Controllers
                     });
                 }
 
-                product.IsActive = false;
+                product.IsActive = changeStatusProductDto.IsActive;
                 context.SaveChanges();
 
                 return Ok();

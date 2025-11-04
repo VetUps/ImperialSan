@@ -76,6 +76,10 @@ namespace ImperialSanWPF
             {
                 guestStatePanel.Visibility = Visibility.Visible;
                 userStatePanel.Visibility = Visibility.Collapsed;
+
+                SessionContext.UserId = -1;
+                SessionContext.Role = "User";
+                SessionContext.UserBasket = new Basket();
             }
         }
 
